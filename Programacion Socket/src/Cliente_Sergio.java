@@ -1,10 +1,12 @@
 import java.io.*;
 import java.net.*;
 
-public class Cliente {
+public class Cliente_Sergio {
 	
-	private static String HOST = "25.36.114.20";
-    private static int PUERTO = 1234;
+	private static String JESUS = "25.36.111.34";
+	private static String ALBERTO = "25.36.114.20";
+	private static String CHUCU = "25.36.177.203";
+    private static int PUERTO = 9999;
 
 	public static void main(String[] args) {
 		
@@ -13,12 +15,12 @@ public class Cliente {
 
 		try {
 			// Creamos nuestro socket
-			socket = new Socket(HOST, PUERTO);
+			socket = new Socket(ALBERTO , PUERTO);
 
 			mensaje = new DataOutputStream(socket.getOutputStream());
 
 			// Enviamos un mensaje
-			mensaje.writeUTF("Hola soy Cliente!!");
+			mensaje.writeUTF("Hola soy Sergio!!");
 
 			// Cerramos la conexión
 			socket.close();
