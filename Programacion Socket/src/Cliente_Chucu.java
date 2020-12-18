@@ -1,28 +1,28 @@
 import java.io.*;
 import java.net.*;
 
-public class Cliente {
+public class Cliente_Chucu {
 	
-	private static String HOST = "25.36.111.34";
-    private static int PUERTO = 1234;
+	private final static String HOST_SERGIO= "25.36.124.184";
+	private final static String HOST_ALBERTO = "25.36.114.20";
+	private final static String HOST_JESUS = "25.36.111.34";
+	
+    private static int PUERTO = 9999;
 
 	public static void main(String[] args) {
 		
 		Socket socket;
 		DataOutputStream mensaje;
+		 
 
 		try {
 			// Creamos nuestro socket
-			socket = new Socket(HOST, PUERTO);
+			socket = new Socket(HOST_ALBERTO, PUERTO);
 
 			mensaje = new DataOutputStream(socket.getOutputStream());
 
 			// Enviamos un mensaje
-<<<<<<< HEAD
 			mensaje.writeUTF("Hola soy JOSE!!");
-=======
-			mensaje.writeUTF("Hola soy Cliente!!");
->>>>>>> e93e7e34861c53b5c5b2035d2af1be9dfabc8555
 
 			// Cerramos la conexión
 			socket.close();
