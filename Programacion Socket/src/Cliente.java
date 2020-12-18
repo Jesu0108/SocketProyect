@@ -18,7 +18,7 @@ public class Cliente {
 			mensaje = new DataOutputStream(socket.getOutputStream());
 
 			// Enviamos un mensaje
-			mensaje.writeUTF("Hola soy Sergio!!");
+			mensaje.writeUTF("Hola soy Cliente!!");
 
 			// Cerramos la conexión
 			socket.close();
