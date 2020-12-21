@@ -4,9 +4,9 @@ import java.util.concurrent.Semaphore;
 
 public class Cliente_Prueba {
 	private static String HOSTJESUS = "25.85.14.114";
-	private static String HOSTSERGIO = "25.36.124.184";
+	private static String HOSTSERGIO = "25.84.193.39";
 	private static String HOSTALBERTO = "25.84.175.186";
-	private static String HOSTCHUCU = "25.36.177.203";
+	private static String HOSTCHUCU = "25.85.119.209";
 
 	
 
@@ -75,7 +75,7 @@ public class Cliente_Prueba {
 
 			try {
 				// Creamos nuestro socket
-			socket = new Socket(HOSTJESUS, PUERTO);
+			socket = new Socket(HOSTCHUCU, PUERTO);
 
 			DataOutputStream mensaje = new DataOutputStream(socket.getOutputStream());
 			// Enviamos un mensaje
