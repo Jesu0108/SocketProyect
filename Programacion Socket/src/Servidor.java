@@ -1,7 +1,6 @@
-import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -10,52 +9,50 @@ public class Servidor {
 
 	public static void main(String args[]) {
 
-		BufferedReader entrada;
-		DataOutputStream salida;
-		Socket socket;
-		ServerSocket serverSocket;
-
+		ServerSocket servidor;
+        Socket socket;
+        DataInputStream entradaMensaje;
+        DataOutputStream salidaMensaje;
+		
 		try {
-
-			while (true) {
-
-				serverSocket = new ServerSocket(PUERTO);
-				
-				System.out.println("Esperando una conexión...");
-
-				socket = serverSocket.accept();
-
-				System.out.println("Un cliente se ha conectado...");
-
-				// Para los canales de entrada y salida de datos
-
-				entrada = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-				salida = new DataOutputStream(socket.getOutputStream());
-
-				System.out.println("Confirmando conexion al cliente....");
-
-				salida.writeUTF("Conexión exitosa...");
-
-				// Para recibir el mensaje
-
-				String mensajeRecibido = entrada.readLine();
-
-				System.out.println(mensajeRecibido);
-
-				salida.writeUTF("Se recibio tu mensaje.");
-
-				salida.writeUTF("Gracias por conectarte.");
-
-				System.out.println("Cerrando conexión...");
-
-				// Cerrando la conexón
-				serverSocket.close();
-			}
-
-		} catch (IOException e) {
-			System.out.println("Error de entrada/salida." + e.getMessage());
-		}
+            //Creamos el socket del servidor
+            servidor = new ServerSocket(PUERTO);
+            System.out.println("*Servidor iniciado*\n");
+ 
+            //Siempre estara escuchando peticiones
+            while (true) {
+ 
+                //Espero a que un cliente se conecte
+            	socket = servidor.accept();
+ 
+                System.out.println("Cliente conectado--------------------------");
+                entradaMensaje = new DataInputStream(socket.getInputStream());
+                salidaMensaje = new DataOutputStream(socket.getOutputStream());
+ 
+                //Leo el mensaje que me envia
+                String mensaje = entradaMensaje.readUTF();
+ 
+                System.out.println(mensaje);
+ 
+                //Le envio un mensaje
+                salidaMensaje.writeUTF("-Mensaje aqui-");
+                salidaMensaje.writeUTF("Pokemon > Digimon");
+                salidaMensaje.writeUTF("A");
+                salidaMensaje.writeUTF("E");
+                salidaMensaje.writeUTF("U");
+                salidaMensaje.writeUTF("Rojo");
+                salidaMensaje.writeUTF("Lasaña");
+                salidaMensaje.writeUTF("Leche");
+                salidaMensaje.writeUTF("Croquetas");
+                //Cierro el socket
+                socket.close();
+                System.out.println("Cliente conectado--------------------------\n");
+ 
+            }
+ 
+        } catch (IOException ex) {
+			System.out.println("Error de entrada/salida: " + ex.getMessage());
+        }
+	}
 
 	}
-}
