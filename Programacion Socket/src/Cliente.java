@@ -3,7 +3,7 @@ import java.net.*;
 
 public class Cliente {
 	
-	private static String HOST = "25.36.111.34";
+	private static String HOST = "25.84.193.39";
     private static int PUERTO = 1234;
 
 	public static void main(String[] args) {
