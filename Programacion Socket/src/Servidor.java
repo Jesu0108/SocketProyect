@@ -58,4 +58,11 @@ public class Servidor {
 		}
 
 	}
+	
+	/*
+	 * ######################
+	 * # FUNCION DE MENSAJE #
+	 * ######################
+	 */
+	
 }

@@ -18,11 +18,9 @@ public class Cliente {
 			mensaje = new DataOutputStream(socket.getOutputStream());
 
 			// Enviamos un mensaje
-<<<<<<< HEAD
+
 			mensaje.writeUTF("Hola soy JOSE!!");
-=======
 			mensaje.writeUTF("Hola soy Cliente!!");
->>>>>>> e93e7e34861c53b5c5b2035d2af1be9dfabc8555
 
 			// Cerramos la conexión
 			socket.close();
