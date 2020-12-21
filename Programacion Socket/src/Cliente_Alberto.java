@@ -7,7 +7,7 @@ public class Cliente_Alberto {
 	
 	private static String HOSTJESUS = "25.36.111.34";
 	private static String HOSTSERGIO = "25.36.124.184";
-	private static String HOSTALBERTO = "25.36.114.20";
+	private static String HOSTALBERTO = "25.84.175.186";
 	private static String HOSTCHUCU = "25.36.177.203";
 	
     private static int PUERTO = 9999;
