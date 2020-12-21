@@ -5,7 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Servidor {
-	private static int PUERTO = 9999;
+	private static int PUERTO = 5678;
 
 	public static void main(String args[]) {
 
