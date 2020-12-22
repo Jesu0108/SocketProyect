@@ -38,21 +38,15 @@ public class Cliente_Chucu {
 						
 						String resultado = in.readUTF();
 						System.out.println(resultado);
+					}else {
+						System.out.println("No hay mensaje");
 					}
 				}
 			} catch (UnknownHostException e1) {
 				System.err.println("ERROR "+e1.getMessage());
 				e1.printStackTrace();
 			} catch (IOException e1) {
-				try {
-					if (control.socket.getInputStream()!=null) {
-						System.out.println("No hay mensaje");
-					}else {
-						System.err.println("ERROR "+e1.getMessage());
-					}
-				} catch (Exception e) {
-					System.err.println("ERROR "+e.getMessage());
-				}
+				System.err.println("ERROR "+e1.getMessage());
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -68,7 +62,7 @@ public class Cliente_Chucu {
 
 			try {
 				// Creamos nuestro socket
-				control.socket = new Socket(control.HOST_JESUS, control.PUERTO);
+				control.socket = new Socket(control.HOST_SERGIO, control.PUERTO);
 
 				mensaje = new DataOutputStream(control.socket.getOutputStream());
 

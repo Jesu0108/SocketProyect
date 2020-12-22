@@ -5,39 +5,31 @@ public class Cliente_Alberto {
 	
 	
 	
-	private static String HOSTJESUS = "25.36.111.34";
-	private static String HOSTSERGIO = "25.36.124.184";
-	private static String HOSTALBERTO = "25.36.114.20";
-	private static String HOSTCHUCU = "25.36.177.203";
+	private static String HOSTJESUS = "25.85.14.114";
+	private static String HOSTSERGIO = "25.84.193.39";
+	private static String HOSTALBERTO = "25.84.175.186";
+	private static String HOSTCHUCU = "25.85.119.209";
 	
-    private static int PUERTO = 9999;
+    private static int PUERTO = 5678;
 
 	public static void main(String[] args) {
 		
 		Socket socket;
-		Socket socket2;
-		ServerSocket serversocket;
 		DataOutputStream mensaje;
-		BufferedReader entrada;
 
 		try {
 			// Creamos nuestro socket
 			socket = new Socket(HOSTJESUS, PUERTO);
 
 			mensaje = new DataOutputStream(socket.getOutputStream());
-			serversocket = new ServerSocket(PUERTO);
+			DataInputStream in = new DataInputStream(socket.getInputStream());
 			// Enviamos un mensaje
 			mensaje.writeUTF("Hola soy Alberto!!");
 
+			String resultado = in.readUTF();
+			 
+            System.out.println(resultado);
 			
-			
-			socket2 = serversocket.accept();
-			
-			entrada = new BufferedReader(new InputStreamReader(socket2.getInputStream()));
-			
-			String msg = entrada.readLine();
-			
-			System.out.println(msg);
 			
 			// Cerramos la conexión
 			socket.close();
