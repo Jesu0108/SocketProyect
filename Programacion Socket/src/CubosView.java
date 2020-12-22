@@ -18,7 +18,7 @@ public class CubosView {
 	// INFO CUBOS
 	private static int iNumCubos = 5;
 	private static int iTempCubo = 0;
-	private static int iPesoCubo = 0;
+	private static float fPesoCubo = 0;
 
 	// ---------------------------------------------------------------------------------------------------------
 
@@ -50,7 +50,7 @@ public class CubosView {
 					// Enviamos un mensaje al servidor
 					if (calorCubo()) {
 						mensaje.writeUTF("Cubo " + getiId() + " ARDIENDO.");
-						mensaje.writeObject(new Cubos(getiId(), iTempCubo, iPesoCubo));
+						mensaje.writeObject(new Cubos(getiId(), iTempCubo));
 						// Cerramos el socket despues de enviar el mensaje
 						socket.close();
 						
@@ -59,7 +59,7 @@ public class CubosView {
 						
 					} else if (pesoCubo()) {
 						mensaje.writeUTF("Cubo " + getiId() + " LLENO.");
-						mensaje.writeObject(new Cubos(getiId(), iTempCubo, iPesoCubo));
+						mensaje.writeObject(new Cubos(getiId(),fPesoCubo));
 						// Cerramos el socket despues de enviar el mensaje
 						socket.close();
 						
@@ -117,17 +117,17 @@ public class CubosView {
 
 	public static boolean pesoCubo() {
 		boolean boRecoger = false;
-		int iPeso = 0;
+		float fPeso = 0;
 
-		iPeso = (int) ((Math.random() * 100) + 1);
+		fPeso = (float) ((Math.random() * 100) + 1);
 
-		if (iPeso >= 60) {
+		if (fPeso >= 60) {
 			boRecoger = true;
 		} else {
 			boRecoger = false;
 		}
 
-		iPesoCubo = iPeso;
+		fPesoCubo = fPeso;
 
 		return boRecoger;
 	}
