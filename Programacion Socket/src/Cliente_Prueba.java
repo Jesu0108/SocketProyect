@@ -3,12 +3,10 @@ import java.net.*;
 import java.util.concurrent.Semaphore;
 
 public class Cliente_Prueba {
-	private static String HOSTJESUS = "25.85.14.114";
-	private static String HOSTSERGIO = "25.84.193.39";
+	// private static String HOSTJESUS = "25.85.14.114";
+	// private static String HOSTSERGIO = "25.84.193.39";
 	private static String HOSTALBERTO = "25.84.175.186";
-	private static String HOSTCHUCU = "25.85.119.209";
-
-	
+	// private static String HOSTCHUCU = "25.85.119.209";
 
 	public class Control {
 
@@ -22,37 +20,37 @@ public class Cliente_Prueba {
 			this.semaforoRecibir = semaforoRecibir;
 		}
 	}
-	
+
 	private Socket socket;
 	final int PUERTO = 5678;
-	
+
 	private final Control control = new Control();
 
 	public class Recibidor implements Runnable {
 
 		@Override
 		public void run() {
-			
-		try {
-			control.semaforoRecibir.acquire();
-			while(true){
-			if(socket.getInputStream()!=null && socket.getInputStream()!=null) {
-			DataInputStream in = new DataInputStream(socket.getInputStream());
-			
-			String resultado = in.readUTF();
-			 
-            System.out.println(resultado);
-			}
+
+			try {
+				control.semaforoRecibir.acquire();
+				while (true) {
+					if (socket.getInputStream() != null && socket.getInputStream() != null) {
+						DataInputStream in = new DataInputStream(socket.getInputStream());
+
+						String resultado = in.readUTF();
+
+						System.out.println(resultado);
+					}
+				}
+
+			} catch (UnknownHostException e) {
+				System.out.println("El host no existe o no está activo.");
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				System.out.println(e.getMessage());
 			}
 
-		} catch (UnknownHostException e) {
-			System.out.println("El host no existe o no está activo.");
-		}catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			System.out.println(e.getMessage());
-		}
-			
 		}
 	}
 
@@ -63,15 +61,15 @@ public class Cliente_Prueba {
 
 			try {
 				// Creamos nuestro socket
-			socket = new Socket(HOSTJESUS, PUERTO);
+				socket = new Socket(HOSTALBERTO, PUERTO);
 
-			DataOutputStream mensaje = new DataOutputStream(socket.getOutputStream());
-			// Enviamos un mensaje
-			mensaje.writeUTF("Hola soy Alberto!!");
-			control.semaforoRecibir.release();
-			}catch(IOException e) {
+				DataOutputStream mensaje = new DataOutputStream(socket.getOutputStream());
+				// Enviamos un mensaje
+				mensaje.writeUTF("Hola soy Alberto!!");
+				control.semaforoRecibir.release();
+			} catch (IOException e) {
 				System.out.println("Error al conectar");
-				
+
 			}
 		}
 	}
@@ -79,9 +77,9 @@ public class Cliente_Prueba {
 	private void executeMultiThreading() throws InterruptedException {
 
 		Thread recibidor = new Thread(new Recibidor());
-		
+
 		Thread enviador = new Thread(new Enviador());
-		
+
 		recibidor.start();
 		enviador.start();
 
