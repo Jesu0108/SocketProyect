@@ -1,25 +1,29 @@
 package modelo;
 
-public class Cubos {
+import java.io.Serializable;
 
+public class Cubo implements Serializable{
+
+	private static final long serialVersionUID = 1L;
+	
 	private int iIdCubo = 0, iTemp = 0;
 	private float fPeso = 0;
 
-	public Cubos(int iIdCubo, int iTemp, float fPeso) {
+	public Cubo(int iIdCubo, int iTemp, float fPeso) {
 
 		setiIdCubo(iIdCubo);
 		setfPeso(fPeso);
 		setiTemp(iTemp);
 	}
 
-	public Cubos(int iIdCubo, float fPeso) {
+	public Cubo(int iIdCubo, float fPeso) {
 
 		setiIdCubo(iIdCubo);
 		setfPeso(fPeso);
 
 	}
 
-	public Cubos(int iIdCubo, int iTemp) {
+	public Cubo(int iIdCubo, int iTemp) {
 
 		setiIdCubo(iIdCubo);
 		setiTemp(iTemp);

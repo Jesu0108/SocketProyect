@@ -22,7 +22,7 @@ public class Cliente_Prueba {
 	}
 
 	private Socket socket;
-	final int PUERTO = 5678;
+	final int PUERTO = 1234;
 
 	private final Control control = new Control();
 
@@ -65,7 +65,7 @@ public class Cliente_Prueba {
 
 				DataOutputStream mensaje = new DataOutputStream(socket.getOutputStream());
 				// Enviamos un mensaje
-				mensaje.writeUTF("Hola soy Alberto!!");
+				mensaje.writeUTF("Hola");
 				control.semaforoRecibir.release();
 			} catch (IOException e) {
 				System.out.println("Error al conectar");

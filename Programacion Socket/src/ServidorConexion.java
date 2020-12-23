@@ -8,13 +8,13 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.Semaphore;
 
-import modelo.Cubos;
+import modelo.Cubo;
 
 public class ServidorConexion {
 	
 	public class Control{
 		
-		Queue<Cubos> cubos = new LinkedList<Cubos>();
+		Queue<Cubo> cubos = new LinkedList<Cubo>();
 		Semaphore semaforo = new Semaphore(0);
 		private final int PUERTO = 9999;
 		private final String HOST = "25.85.119.209";
@@ -93,7 +93,7 @@ public class ServidorConexion {
  
                 //Leo el mensaje que me envia
                 String mensaje = entradaMensaje.readUTF();
-                control.cubos.add((Cubos) entradaObjeto.readObject());
+                control.cubos.add((Cubo) entradaObjeto.readObject());
                 
                 //Compruebo el objeto que le llega al servidor para saber si la petición enviada por el contenedor de basura
                 //es relacionado con la temperatura o con el peso dado que si no supera el limite de ambos no envia ninguna petición.

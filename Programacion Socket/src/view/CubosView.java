@@ -1,14 +1,15 @@
 package view;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-import modelo.Cubos;
+import modelo.Cubo;
 
 public class CubosView {
 
 	// INFO HOST
-	final int PUERTO = 9999;
+	final int PUERTO = 1234;
 	// -------------IPs HOST-------------
 
 	// private static String HOSTJESUS = "25.85.14.114";
@@ -43,35 +44,56 @@ public class CubosView {
 		public void run() {
 
 			try {
-				// Creamos nuestro socket
-				Socket socket = new Socket(HOSTALBERTO, PUERTO);
-				ObjectOutputStream mensaje = new ObjectOutputStream(socket.getOutputStream());
+							
 				while (true) {
+					// Creamos nuestro socket
+					Socket socket =  new Socket(HOSTALBERTO, PUERTO);
+					ObjectOutputStream oCubo = new ObjectOutputStream(socket.getOutputStream());
+					DataOutputStream sMensaje = new DataOutputStream(socket.getOutputStream());
 					// Si el peso o la temperatura del cubo son altos
 					// Enviamos un mensaje al servidor
 					if (calorCubo()) {
-						mensaje.writeUTF("Cubo " + getiId() + " ARDIENDO.");
-						mensaje.writeObject(new Cubos(getiId(), iTempCubo));
-						// Cerramos el socket despues de enviar el mensaje
-						socket.close();
+						System.err.println("A");
+						
+						//Reanudamos la conexion para mandar un mensaje
+						//socket = new Socket(HOSTALBERTO, PUERTO);
+						
+						sMensaje.writeUTF("Cubo " + getiId() + " ARDIENDO.");
+						oCubo.writeObject(new Cubo(getiId(), iTempCubo));
+						
+						// Cerramos el socket
+						//socket.close();
 						
 						//Lo dormimos para que sea mas facil de leer
 						Thread.sleep(1000);
 						
 					} else if (pesoCubo()) {
-						mensaje.writeUTF("Cubo " + getiId() + " LLENO.");
-						mensaje.writeObject(new Cubos(getiId(),fPesoCubo));
-						// Cerramos el socket despues de enviar el mensaje
-						socket.close();
+						System.err.println("B");
+						
+						//Reanudamos la conexion para mandar un mensaje
+						//socket = new Socket(HOSTALBERTO, PUERTO);
+
+						
+						sMensaje.writeUTF("Cubo " + getiId() + " LLENO.");
+						oCubo.writeObject(new Cubo(getiId(),fPesoCubo));
+						
+						// Cerramos el socket
+						//socket.close();
 						
 						//Lo dormimos para que sea mas facil de leer
 						Thread.sleep(1000);
 					} else {
 						System.out.println("Cubo " + getiId() + " sin temperatura ni peso suficientes para notificar.");
+						
+						// Cerramos el socket
+						//socket.close();
+						
+						//Lo dormimos para que sea mas facil de leer
 						Thread.sleep(1000);
 					}
-					
+					socket.close();
 				}
+				
 			} catch (IOException | InterruptedException e) {
 				System.out.println("Error al conectar");
 
