@@ -8,7 +8,7 @@ import modelo.Cubos;
 public class CubosView {
 
 	// INFO HOST
-	final int PUERTO = 5678;
+	final int PUERTO = 9999;
 	// -------------IPs HOST-------------
 
 	// private static String HOSTJESUS = "25.85.14.114";
@@ -68,6 +68,7 @@ public class CubosView {
 						Thread.sleep(1000);
 					} else {
 						System.out.println("Cubo " + getiId() + " sin temperatura ni peso suficientes para notificar.");
+						socket.close();
 					}
 					
 				}
