@@ -1,4 +1,4 @@
-package Camion;
+package modelo;
 
 public class Camion_Modelo implements ICamion_Modelo{
 	private String Usuario, Contrasena;

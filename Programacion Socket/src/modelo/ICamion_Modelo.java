@@ -1,4 +1,4 @@
-package Camion;
+package modelo;
 
 public interface ICamion_Modelo {
 	// PK

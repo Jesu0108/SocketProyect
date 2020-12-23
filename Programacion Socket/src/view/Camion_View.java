@@ -1,8 +1,10 @@
-package Camion;
+package view;
 
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+import controller.Camion_Control;
+import modelo.Camion_Modelo;
 import validacion.valida;
 
 public class Camion_View {

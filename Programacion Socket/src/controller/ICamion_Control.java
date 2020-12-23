@@ -1,4 +1,6 @@
-package Camion;
+package controller;
+
+import modelo.Camion_Modelo;
 
 public interface ICamion_Control {
 	/*
