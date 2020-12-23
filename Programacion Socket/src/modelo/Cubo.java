@@ -16,19 +16,6 @@ public class Cubo implements Serializable{
 		setiTemp(iTemp);
 	}
 
-	public Cubo(int iIdCubo, float fPeso) {
-
-		setiIdCubo(iIdCubo);
-		setfPeso(fPeso);
-
-	}
-
-	public Cubo(int iIdCubo, int iTemp) {
-
-		setiIdCubo(iIdCubo);
-		setiTemp(iTemp);
-	}
-
 	//----------------------------------------------------------------------------------
 	
 	public int getiIdCubo() {

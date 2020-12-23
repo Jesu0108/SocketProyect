@@ -10,7 +10,7 @@ import modelo.Cubo;
 public class CubosView {
 
 	// INFO HOST
-	final int PUERTO = 9999;
+	final int PUERTO = 1234;
 	// -------------IPs HOST-------------
 
 	// private static String HOSTJESUS = "25.85.14.114";
@@ -47,6 +47,8 @@ public class CubosView {
 			try {
 
 				while (true) {
+					
+					//Reseteamos los valores a 0
 					iTempCubo = 0;
 					fPesoCubo = 0;
 
@@ -58,40 +60,30 @@ public class CubosView {
 					// Si el peso o la temperatura del cubo son altos
 					// Enviamos un mensaje al servidor
 					if (calorCubo()) {
-						System.err.println("A");
-						System.out.println("-------------" + iTempCubo + "-------------");
-
 						sMensaje.writeUTF("Cubo " + getiId() + " ARDIENDO.");
-						//oCubo.writeObject(new Cubo(getiId(), iTempCubo));
 						oCubo.writeObject(new Cubo(getiId(), iTempCubo, 0));
 
 						// Lo dormimos para que sea mas facil de leer
 						Thread.sleep(1000);
 
 					} else if (pesoCubo()) {
-						System.err.println("B");
-						System.out.println("-------------"+fPesoCubo+"-------------");
 						
 						sMensaje.writeUTF("Cubo " + getiId() + " LLENO.");
-						//oCubo.writeObject(new Cubo(getiId(), fPesoCubo));
 						oCubo.writeObject(new Cubo(getiId(), 0, fPesoCubo));
 
 						// Lo dormimos para que sea mas facil de leer
 						Thread.sleep(1000);
 					} else {
-						System.err.println("C");
-						System.out.println("-------------" + iTempCubo +","+fPesoCubo+ "-------------");
+
 						sMensaje.writeUTF("Cubo " + getiId() + " sin accion necesaria...");
 						oCubo.writeObject(new Cubo(getiId(), iTempCubo, fPesoCubo));
 
 						// Lo dormimos para que sea mas facil de leer
 						Thread.sleep(1000);
 					}
-
 					// Cerramos el socket
 					socket.close();
 				}
-
 			} catch (IOException | InterruptedException e) {
 				System.out.println("Error al conectar");
 
@@ -126,7 +118,7 @@ public class CubosView {
 
 		iGrados = (int) ((Math.random() * 100) + 1);
 
-		if (iGrados > 40) {
+		if (iGrados > 70) {
 			boFuego = true;
 			iTempCubo = iGrados;
 		} else {
@@ -142,7 +134,7 @@ public class CubosView {
 
 		fPeso = (float) ((Math.random() * 100) + 1);
 
-		if (fPeso >= 60) {
+		if (fPeso >= 50) {
 			boRecoger = true;
 			fPesoCubo = fPeso;
 		} else {
