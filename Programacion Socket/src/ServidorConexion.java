@@ -16,7 +16,7 @@ public class ServidorConexion {
 		
 		Queue<Cubo> cubos = new LinkedList<Cubo>();
 		Semaphore semaforo = new Semaphore(0);
-		private final int PUERTO = 9999;
+		private final int PUERTO = 1234;
 		private final String HOST = "25.85.119.209";
 		Socket socketContenedor;
 		Socket socketCamion;
