@@ -17,7 +17,7 @@ public class ServidorConexion {
 		Queue<Cubos> cubos = new LinkedList<Cubos>();
 		Semaphore semaforo = new Semaphore(0);
 		private final int PUERTO = 9999;
-		private final String HOST = "25.85.14.114";
+		private final String HOST = "25.85.119.209";
 		Socket socketContenedor;
 		Socket socketCamion;
 
@@ -134,14 +134,16 @@ public class ServidorConexion {
 
 		private boolean comprobarTemperaturaCubo() {
 			
+			boolean bCierto;
+			
 			if(control.cubos.peek().getiTemp()!=0) {
 				
-				return true;
+				bCierto = true;
 			}
 			else {
-				return false;
+				bCierto = false;
 			}
-			
+			return bCierto;
 		}
 		
 	}
