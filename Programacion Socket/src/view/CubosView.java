@@ -68,7 +68,7 @@ public class CubosView {
 						Thread.sleep(1000);
 					} else {
 						System.out.println("Cubo " + getiId() + " sin temperatura ni peso suficientes para notificar.");
-						socket.close();
+						Thread.sleep(1000);
 					}
 					
 				}
