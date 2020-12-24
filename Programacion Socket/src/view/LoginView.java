@@ -24,7 +24,7 @@ public class LoginView {
 	}
 	
 	private static boolean registro_Usuario() {
-		//Atributos
+		//Atributos del usuario
 		boolean bExito = true;
 		String sUsuario, sContrasena;
 		CamionCtrl oCamion = new CamionCtrl();
