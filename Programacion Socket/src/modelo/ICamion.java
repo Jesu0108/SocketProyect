@@ -6,5 +6,7 @@ public interface ICamion {
 	public void setUsuario(String usuario);
 	// Atributos
 	public String getContrasena();
-	public void setContrasena(String contrasena);
+	public boolean setContrasena(String contrasena);
+	public final byte MINCHARPASSWORD = 8;
+	public final byte MAXCHARPASSWORD = 30;
 }

@@ -1,10 +1,18 @@
 package view;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import controller.CamionCtrl;
 import modelo.Camion;
+import modelo.Cubo;
 import validacion.valida;
 
 public class CamionView {
@@ -17,11 +25,12 @@ public class CamionView {
 		private final String HOSTSERGIO = "25.84.193.39";
 		private final String HOSTALBERTO = "25.84.175.186";
 		private final String HOSTCHUCU = "25.85.119.209";
+		private Socket socket;
 
 		// USUARIO
 		private final int iNumEmpleados = 5;
-		private String sUsuario = "";
-		private String sContrasena = "";
+		// QUEUE
+		private Queue<String> listCubos = new LinkedList<String>();
 	}
 
 	final Control control = new Control();
@@ -43,67 +52,20 @@ public class CamionView {
 
 		@Override
 		public void run() {
+
 			try {
 				// Variables
-				String sContrasena = "";
-				byte bOpcion = 0;
+
 				// CREA SOCKET
-				Socket socket = new Socket(control.HOSTALBERTO, control.PUERTO);
-				ObjectOutputStream mensaje = new ObjectOutputStream(socket.getOutputStream());
-				/*
-				 * ########### 
-				 * # USUARIO # 
-				 * ###########
-				 */
+				control.socket = new Socket(control.HOSTALBERTO, control.PUERTO);
+				DataOutputStream mensaje = new DataOutputStream(control.socket.getOutputStream());
 
-				bOpcion = Menu_Cliente();
-				
-				mensaje.writeUTF("Un empleado se va a Registrar/Logear");
-				switch (bOpcion) {
-				case 1:
-					byte bCont_Intentos = 0;
-					// do - while para hacer un bucle para loggearse y salir el bucle
-					// cuando hay muchos intentos, cuando el usuario se encuentra en la BD
-					do {
-						control.sUsuario = "Cliente";
-						control.sContrasena = "cliente";
-						bCont_Intentos++;
-					} while (control.oCamion.ClienteExiste(new Camion(control.sUsuario)) || bCont_Intentos == 5);
-					if (bCont_Intentos == 5) {
-						System.out.println("Parece que el usuario no existe");
-
-						bOpcion = Menu_Cliente();
-					}
-					break;
-				case 2:
-					System.out.println("[REGISTRO]");
-					control.sUsuario = "Cliente";
-					// Si existe este usuario
-					if (control.oCamion.ClienteExiste(new Camion(control.sUsuario))) {
-						System.out.println("Este cliente ya se ha registrado");
-						bOpcion = Menu_Cliente();
-					} else {
-						do {
-							// contraseña
-							control.sContrasena = "cliente";
-							sContrasena = "cliente";
-							if (sContrasena.equals(control.sContrasena)) {
-								System.err.println("LAS CONTRASEÑAS NO SON IGUALES");
-							}
-						} while (!control.sUsuario.equals(sContrasena));
-					}
-
-					break;
-				default:
-					System.err.println("ERROR OPCION");
-					break;
-				}
-
-				// El cliente envia al server
-				mensaje.writeUTF("El empleado " + id + " se loggea para ponerse a trabajar");
-				mensaje.writeObject(new Camion(control.sUsuario, control.sContrasena));
+				// El usuario entra a la opcion de usuario
+				LoginView.opcion_usuario();
+				// El camion manda el host
+				mensaje.writeUTF(control.HOSTCHUCU);
 				// Cerramos el socket
-				socket.close();
+
 				Thread.sleep(2000);
 			} catch (Exception e) {
 				System.err.println("ERROR " + e.getMessage());
@@ -112,18 +74,64 @@ public class CamionView {
 
 	}
 
-	private byte Menu_Cliente() {
-		System.out.println("1.) Loggearse");
-		System.out.println("2.) Registrarse");
-		return (byte) valida.valida("Introduce una opcion: ", 1, 2, 3);
+	public class Recibir_Server implements Runnable {
+
+		@Override
+		public void run() {
+			ServerSocket servidor = null;
+
+			DataInputStream entradaMensaje;
+
+			try {
+				// Creamos el socket del servidor
+
+				servidor = new ServerSocket(control.PUERTO);
+
+				// Siempre estara escuchando peticiones
+				while (true) {
+
+					control.socket = servidor.accept();
+
+					entradaMensaje = new DataInputStream(control.socket.getInputStream());
+
+					// Leo el mensaje que me envia
+
+					control.listCubos.add(entradaMensaje.readUTF());
+					accionCamion();
+
+					// Cierro el socket
+					entradaMensaje.close();
+
+					control.socket.close();
+				}
+			} catch (IOException | InterruptedException ex) {
+				System.err.println("Error de conexion: " + ex.getMessage());
+			}
+
+		}
+
+	}
+
+	private void accionCamion() throws InterruptedException {
+		// camion recoge la basura
+		String sCubo_recoge = control.listCubos.poll();
+		System.out.println("El camion recoge el cubo " + sCubo_recoge);
+		// Tiempo que tarda en recoger el cubo
+		Thread.sleep(2000);
+		// Al terminar al recoger manda el mensaje
+		System.out.println("El camion termino de recoger el cubo " + sCubo_recoge);
+
 	}
 
 	public void executeMultiThreading() {
+		//Se ejecuta el hilo el usuario 
 		try {
 			for (int iCont = 0; iCont < control.iNumEmpleados; iCont++) {
-				new Thread(new Hilo_Usuario(iCont));
+				new Thread(new Hilo_Usuario(iCont)).start();
 				Thread.sleep(2000);
 			}
+			new Thread(new Recibir_Server()).start();
+			
 		} catch (Exception e) {
 			System.err.println("ERROR " + e.getMessage());
 		}

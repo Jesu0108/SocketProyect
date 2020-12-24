@@ -4,7 +4,6 @@ import modelo.Camion;
 
 public class CamionCtrl implements ICamionCtrl{
 
-	@Override
 	public int add(Camion oCamion) {
 		int iRes = 0;
 		//Añadir
@@ -12,9 +11,7 @@ public class CamionCtrl implements ICamionCtrl{
 				+ "('"+oCamion.getUsuario()+"','"+oCamion.getContrasena()+"');";
 		return iRes;
 	}
-
-	@Override
-	public boolean ClienteExiste(Camion oCamion) {
+	public  boolean ClienteExiste(Camion oCamion) {
 		boolean bRes = true;
 		
 		//Verificar
