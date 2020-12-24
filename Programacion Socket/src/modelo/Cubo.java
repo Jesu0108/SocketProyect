@@ -2,7 +2,7 @@ package modelo;
 
 import java.io.Serializable;
 
-public class Cubo implements Serializable{
+public class Cubo implements Serializable, ICubo{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -18,26 +18,32 @@ public class Cubo implements Serializable{
 
 	//----------------------------------------------------------------------------------
 	
+	@Override
 	public int getiIdCubo() {
 		return iIdCubo;
 	}
 
+	@Override
 	public void setiIdCubo(int iIdCubo) {
 		this.iIdCubo = iIdCubo;
 	}
 
+	@Override
 	public int getiTemp() {
 		return iTemp;
 	}
 
+	@Override
 	public void setiTemp(int iTemp) {
 		this.iTemp = iTemp;
 	}
 
+	@Override
 	public float getfPeso() {
 		return fPeso;
 	}
 
+	@Override
 	public void setfPeso(float fPeso) {
 		this.fPeso = fPeso;
 	}
