@@ -55,12 +55,10 @@ public class CubosView {
 					// Creamos nuestro socket
 					Socket socket = new Socket(HOSTALBERTO, PUERTO);
 					ObjectOutputStream oCubo = new ObjectOutputStream(socket.getOutputStream());
-					DataOutputStream sMensaje = new DataOutputStream(socket.getOutputStream());
 
 					// Si el peso o la temperatura del cubo son altos
 					// Enviamos un mensaje al servidor
 					if (calorCubo()) {
-						sMensaje.writeUTF("Cubo " + getiId() + " ARDIENDO.");
 						oCubo.writeObject(new Cubo(getiId(), iTempCubo, 0));
 
 						// Lo dormimos para que sea mas facil de leer
@@ -68,14 +66,12 @@ public class CubosView {
 
 					} else if (pesoCubo()) {
 						
-						sMensaje.writeUTF("Cubo " + getiId() + " LLENO.");
 						oCubo.writeObject(new Cubo(getiId(), 0, fPesoCubo));
 
 						// Lo dormimos para que sea mas facil de leer
 						Thread.sleep(1000);
 					} else {
 
-						sMensaje.writeUTF("Cubo " + getiId() + " sin accion necesaria...");
 						oCubo.writeObject(new Cubo(getiId(), iTempCubo, fPesoCubo));
 
 						// Lo dormimos para que sea mas facil de leer
