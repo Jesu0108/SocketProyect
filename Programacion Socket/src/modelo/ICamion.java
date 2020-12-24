@@ -1,6 +1,6 @@
 package modelo;
 
-public interface ICamion_Modelo {
+public interface ICamion {
 	// PK
 	public String getUsuario();
 	public void setUsuario(String usuario);

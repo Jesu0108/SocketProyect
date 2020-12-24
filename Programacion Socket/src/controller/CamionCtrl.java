@@ -1,11 +1,11 @@
 package controller;
 
-import modelo.Camion_Modelo;
+import modelo.Camion;
 
-public class Camion_Control implements ICamion_Control{
+public class CamionCtrl implements ICamionCtrl{
 
 	@Override
-	public int add(Camion_Modelo oCamion) {
+	public int add(Camion oCamion) {
 		int iRes = 0;
 		//Añadir
 		String sql = "INSERT INTO CAMION (USUARIO, CONTRASEÑA) VALUES "
@@ -14,7 +14,7 @@ public class Camion_Control implements ICamion_Control{
 	}
 
 	@Override
-	public boolean ClienteExiste(Camion_Modelo oCamion) {
+	public boolean ClienteExiste(Camion oCamion) {
 		boolean bRes = true;
 		
 		//Verificar

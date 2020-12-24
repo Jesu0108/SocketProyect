@@ -1,15 +1,15 @@
 package modelo;
 
-public class Camion_Modelo implements ICamion_Modelo{
+public class Camion implements ICamion{
 	private String Usuario, Contrasena;
 	
 	//Constructor PK
 	
-	public Camion_Modelo(String usuario) {
+	public Camion(String usuario) {
 		this.Usuario = usuario;
 	}
 	
-	public Camion_Modelo(String usuario, String contrasena) {
+	public Camion(String usuario, String contrasena) {
 		Usuario = usuario;
 		Contrasena = contrasena;
 	}

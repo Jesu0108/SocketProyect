@@ -1,3 +1,4 @@
+package view;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -10,7 +11,7 @@ import java.util.concurrent.Semaphore;
 
 import modelo.Cubo;
 
-public class ServidorConexion {
+public class ServidorView {
 
 	public class Control {
 
@@ -158,7 +159,7 @@ public class ServidorConexion {
 	public static void main(String args[]) {
 
 		try {
-			ServidorConexion conexion = new ServidorConexion();
+			ServidorView conexion = new ServidorView();
 			conexion.executeMultiThreading();
 		} catch (Exception e) {
 			System.err.println(e.getMessage());

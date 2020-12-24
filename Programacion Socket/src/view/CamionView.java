@@ -3,15 +3,15 @@ package view;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-import controller.Camion_Control;
-import modelo.Camion_Modelo;
+import controller.CamionCtrl;
+import modelo.Camion;
 import validacion.valida;
 
-public class Camion_View {
+public class CamionView {
 	public class Control {
 		final int PUERTO = 5678;
 
-		Camion_Control oCamion = new Camion_Control();
+		CamionCtrl oCamion = new CamionCtrl();
 		// IP HOST
 		private final String HOSTJESUS = "25.85.14.114";
 		private final String HOSTSERGIO = "25.84.193.39";
@@ -68,7 +68,7 @@ public class Camion_View {
 						control.sUsuario = "Cliente";
 						control.sContrasena = "cliente";
 						bCont_Intentos++;
-					} while (control.oCamion.ClienteExiste(new Camion_Modelo(control.sUsuario)) || bCont_Intentos == 5);
+					} while (control.oCamion.ClienteExiste(new Camion(control.sUsuario)) || bCont_Intentos == 5);
 					if (bCont_Intentos == 5) {
 						System.out.println("Parece que el usuario no existe");
 
@@ -79,7 +79,7 @@ public class Camion_View {
 					System.out.println("[REGISTRO]");
 					control.sUsuario = "Cliente";
 					// Si existe este usuario
-					if (control.oCamion.ClienteExiste(new Camion_Modelo(control.sUsuario))) {
+					if (control.oCamion.ClienteExiste(new Camion(control.sUsuario))) {
 						System.out.println("Este cliente ya se ha registrado");
 						bOpcion = Menu_Cliente();
 					} else {
@@ -101,7 +101,7 @@ public class Camion_View {
 
 				// El cliente envia al server
 				mensaje.writeUTF("El empleado " + id + " se loggea para ponerse a trabajar");
-				mensaje.writeObject(new Camion_Modelo(control.sUsuario, control.sContrasena));
+				mensaje.writeObject(new Camion(control.sUsuario, control.sContrasena));
 				// Cerramos el socket
 				socket.close();
 				Thread.sleep(2000);
@@ -130,7 +130,7 @@ public class Camion_View {
 	}
 
 	public static void main(String[] args) {
-		Camion_View oCamion = new Camion_View();
+		CamionView oCamion = new CamionView();
 		oCamion.executeMultiThreading();
 	}
 }
