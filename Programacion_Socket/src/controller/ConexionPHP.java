@@ -12,68 +12,61 @@ import org.json.JSONObject;
 
 import modelo.Camion;
 
-
 public class ConexionPHP {
 
 	public static List<Camion> JsonToCamiones(String respuesta) {
-		
+
 		List<Camion> lstResultado = new ArrayList<>();
-		
+
 		JSONArray jsonA = new JSONArray(respuesta);
-		
-		for(int i= 0; i<jsonA.length(); i++) {
-			
+
+		for (int i = 0; i < jsonA.length(); i++) {
+
 			JSONObject jsonO = jsonA.getJSONObject(i);
-			
+
 			Camion c = JsonToCamion(jsonO);
-					
+
 			lstResultado.add(c);
-			
-			
+
 		}
-		
-		
-		
+
 		return lstResultado;
 	}
 
 	public static Camion JsonToCamion(JSONObject jsonO) {
-		
-		 String usuario = jsonO.getString("usuario");
-		 String contrasenia = jsonO.getString("contraseña");
-		 
-		
-		Camion c = new Camion(usuario,contrasenia);
-		
-		 
-		 
+
+		String usuario = jsonO.getString("usuario");
+		String contrasenia = jsonO.getString("contraseña");
+
+		Camion c = new Camion(usuario, contrasenia);
+
 		return c;
 	}
 
-	public static String peticionHttp(String urlWebService) throws Exception{
-		
+	public static String peticionHttp(String urlWebService) throws Exception {
+
 		StringBuilder resultado = new StringBuilder();
-		
+
 		URL url = new URL(urlWebService);
-		
+
 		HttpURLConnection conexion = (HttpURLConnection) url.openConnection();
-		
+
 		conexion.setRequestMethod("GET");
-		
-		//Recoger los datos de respuesta
+
+		// Recoger los datos de respuesta
 		BufferedReader rd = new BufferedReader(new InputStreamReader(conexion.getInputStream()));
-		
+
 		String linea;
-		
-		while((linea = rd.readLine()) != null) {
-			
+
+		while ((linea = rd.readLine()) != null) {
+
 			resultado.append(linea);
-			
+
 		}
-		
-		//cerramos el buffered
+
+		// cerramos el buffered
 		rd.close();
-		
+
 		return resultado.toString();
 	}
 

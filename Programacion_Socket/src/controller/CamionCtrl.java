@@ -1,20 +1,19 @@
 package controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import modelo.Camion;
 
 public class CamionCtrl implements ICamionCtrl {
-
-	public static List<Camion> lstCamiones;
-	String url = "http://socketdatabase.tk/";
+	List<Camion> listCamion = new ArrayList<Camion>();
 
 	@Override
 	public void add(Camion oCamion) {
 
 		try {
-
-			url += "insertar_camion.php?usuario=" + oCamion.getUsuario() + "&contraseña=" + oCamion.getContrasena();
+			String url = "http://socketdatabase.tk/insertar_camion.php?usuario=" + oCamion.getUsuario()
+					+ "&contrasenia=" + oCamion.getContrasena();
 			ConexionPHP.peticionHttp(url);
 
 		} catch (Exception e) {
@@ -28,14 +27,12 @@ public class CamionCtrl implements ICamionCtrl {
 		boolean bCierto = false;
 
 		try {
-
-			url += "getCamion.php?usuario=" + oCamion.getUsuario();
+			String url = "http://socketdatabase.tk/getCamion.php?usuario=" + oCamion.getUsuario();
 			String respuesta = ConexionPHP.peticionHttp(url);
-			
-			
-			
-			if (respuesta == null || respuesta.equals("")) {
 
+			listCamion = ConexionPHP.JsonToCamiones(respuesta);
+
+			if (listCamion.isEmpty()) {
 				bCierto = false;
 			} else {
 				bCierto = true;
@@ -55,10 +52,12 @@ public class CamionCtrl implements ICamionCtrl {
 
 		try {
 
-			url += "getCamionPassword.php?usuario=" + oCamion.getUsuario() + "&contraseña=" + oCamion.getContrasena();
+			String url = "http://socketdatabase.tk/getCamionPassword.php?usuario=" + oCamion.getUsuario()
+					+ "&contrasenia=" + oCamion.getContrasena();
 			String respuesta = ConexionPHP.peticionHttp(url);
+			listCamion = ConexionPHP.JsonToCamiones(respuesta);
 
-			if (respuesta == null || respuesta.equals("")) {
+			if (listCamion.isEmpty()) {
 
 				bCierto = false;
 			} else {
@@ -72,7 +71,5 @@ public class CamionCtrl implements ICamionCtrl {
 		return bCierto;
 
 	}
-	
-	
 
 }

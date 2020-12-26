@@ -17,7 +17,7 @@ import validacion.valida;
 
 public class CamionView {
 	public class Control {
-		final int PUERTO = 5678;
+		final int PUERTO = 1234;
 
 		CamionCtrl oCamion = new CamionCtrl();
 		// IP HOST

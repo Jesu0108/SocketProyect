@@ -36,6 +36,7 @@ public class LoginView {
 			bExito = false;
 		} else {
 			oCamion.add(new Camion(sUsuario, sContrasena));
+			System.out.println("BUENOS DIAS");
 			bExito = true;
 		}
 		return bExito;
@@ -82,6 +83,7 @@ public class LoginView {
 	}
 
 	private static byte Menu_Usuario() {
+		
 		System.out.println("1.) Loggearse");
 		System.out.println("2.) Registrarse");
 		System.out.println("3.) Salir");
