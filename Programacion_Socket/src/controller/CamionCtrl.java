@@ -31,7 +31,9 @@ public class CamionCtrl implements ICamionCtrl {
 
 			url += "getCamion.php?usuario=" + oCamion.getUsuario();
 			String respuesta = ConexionPHP.peticionHttp(url);
-
+			
+			
+			
 			if (respuesta == null || respuesta.equals("")) {
 
 				bCierto = false;

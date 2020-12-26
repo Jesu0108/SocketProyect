@@ -36,20 +36,18 @@ public class CamionView {
 	final Control control = new Control();
 
 	public class Hilo_Usuario implements Runnable {
-		
 
 		@Override
 		public void run() {
 
 			try {
 				// Variables
-
+				// El usuario entra a la opcion de usuario
+				LoginView.opcion_usuario();
 				// CREA SOCKET
 				control.socket = new Socket(control.HOSTALBERTO, control.PUERTO);
 				DataOutputStream mensaje = new DataOutputStream(control.socket.getOutputStream());
 
-				// El usuario entra a la opcion de usuario
-				LoginView.opcion_usuario();
 				// El camion manda el host
 				mensaje.writeUTF(control.HOSTCHUCU);
 				// Cerramos el socket
@@ -94,7 +92,7 @@ public class CamionView {
 					control.socket.close();
 				}
 			} catch (IOException | InterruptedException ex) {
-				System.err.println("Error de conexion: " + ex.getMessage());
+				System.err.println("---Error de conexion: " + ex.getMessage());
 			}
 
 		}
@@ -113,13 +111,12 @@ public class CamionView {
 	}
 
 	public void executeMultiThreading() {
-		//Se ejecuta el hilo el usuario 
-		
+		// Se ejecuta el hilo el usuario
+
 		new Thread(new Hilo_Usuario()).start();
-			
+
 		new Thread(new Recibir_Server()).start();
-			
-		
+
 	}
 
 	public static void main(String[] args) {
