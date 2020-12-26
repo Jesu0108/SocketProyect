@@ -36,19 +36,7 @@ public class CamionView {
 	final Control control = new Control();
 
 	public class Hilo_Usuario implements Runnable {
-		private int id;
-
-		public Hilo_Usuario(int id) {
-			this.id = id;
-		}
-
-		public int getId() {
-			return id;
-		}
-
-		public void setId(int id) {
-			this.id = id;
-		}
+		
 
 		@Override
 		public void run() {
@@ -66,6 +54,7 @@ public class CamionView {
 				mensaje.writeUTF(control.HOSTCHUCU);
 				// Cerramos el socket
 
+				control.socket.close();
 				Thread.sleep(2000);
 			} catch (Exception e) {
 				System.err.println("ERROR " + e.getMessage());
@@ -125,16 +114,12 @@ public class CamionView {
 
 	public void executeMultiThreading() {
 		//Se ejecuta el hilo el usuario 
-		try {
-			for (int iCont = 0; iCont < control.iNumEmpleados; iCont++) {
-				new Thread(new Hilo_Usuario(iCont)).start();
-				Thread.sleep(2000);
-			}
-			new Thread(new Recibir_Server()).start();
+		
+		new Thread(new Hilo_Usuario()).start();
 			
-		} catch (Exception e) {
-			System.err.println("ERROR " + e.getMessage());
-		}
+		new Thread(new Recibir_Server()).start();
+			
+		
 	}
 
 	public static void main(String[] args) {
