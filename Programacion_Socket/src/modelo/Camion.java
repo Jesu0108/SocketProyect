@@ -5,7 +5,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class Camion implements ICamion{
-	private String Usuario, Contrasena;
+	private String Usuario, Contrasenia;
 	
 	//Constructor PK
 	
@@ -13,9 +13,9 @@ public class Camion implements ICamion{
 		this.Usuario = usuario;
 	}
 	
-	public Camion(String usuario, String contrasena) {
+	public Camion(String usuario, String contrasenia) {
 		Usuario = usuario;
-		Contrasena = contrasena;
+		Contrasenia = contrasenia;
 	}
 
 	public String getUsuario() {
@@ -26,15 +26,15 @@ public class Camion implements ICamion{
 		Usuario = usuario;
 	}
 
-	public String getContrasena() {
-		return Contrasena;
+	public String getcontrasenia() {
+		return Contrasenia;
 	}
 	@Override
-	public boolean setContrasena(String contrasena) {
+	public boolean setcontrasenia(String contrasenia) {
 		boolean bExito = false;
-        if (Contrasena != null && Contrasena.length() >= MINCHARPASSWORD
-                && Contrasena.length() <= MAXCHARPASSWORD) {
-            this.Contrasena = encryptSha512(Contrasena);
+        if (contrasenia != null && contrasenia.length() >= MINCHARPASSWORD
+                && contrasenia.length() <= MAXCHARPASSWORD) {
+            this.Contrasenia = encryptSha512(contrasenia);
             bExito = true;
         }
         return bExito;
@@ -62,8 +62,10 @@ public class Camion implements ICamion{
 		String sResultado = "";
 		sResultado += "---CAMION---";
 		sResultado += "Usuario: "+Usuario+"\n";
-		sResultado += "Contrasenia: "+Contrasena+"\n";
+		sResultado += "Contrasenia: "+Contrasenia+"\n";
 		return sResultado;
 	}
+
+	
 	
 }

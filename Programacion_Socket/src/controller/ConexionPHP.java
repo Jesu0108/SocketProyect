@@ -36,9 +36,8 @@ public class ConexionPHP {
 	public static Camion JsonToCamion(JSONObject jsonO) {
 
 		String usuario = jsonO.getString("usuario");
-		String contrasenia = jsonO.getString("contrasenias");
 
-		Camion c = new Camion(usuario, contrasenia);
+		Camion c = new Camion(usuario);
 
 		return c;
 	}

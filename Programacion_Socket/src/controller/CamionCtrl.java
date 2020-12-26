@@ -13,7 +13,7 @@ public class CamionCtrl implements ICamionCtrl {
 
 		try {
 			String url = "http://socketdatabase.tk/insertar_camion.php?usuario=" + oCamion.getUsuario()
-					+ "&contrasenia=" + oCamion.getContrasena();
+					+ "&contrasenia=" + oCamion.getcontrasenia();
 			ConexionPHP.peticionHttp(url);
 
 		} catch (Exception e) {
@@ -53,7 +53,7 @@ public class CamionCtrl implements ICamionCtrl {
 		try {
 
 			String url = "http://socketdatabase.tk/getCamionPassword.php?usuario=" + oCamion.getUsuario()
-					+ "&contrasenia=" + oCamion.getContrasena();
+					+ "&contrasenia=" + oCamion.getcontrasenia();
 			String respuesta = ConexionPHP.peticionHttp(url);
 			listCamion = ConexionPHP.JsonToCamiones(respuesta);
 
