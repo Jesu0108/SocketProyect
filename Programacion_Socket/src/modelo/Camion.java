@@ -62,7 +62,7 @@ public class Camion implements ICamion{
 		String sResultado = "";
 		sResultado += "---CAMION---";
 		sResultado += "Usuario: "+Usuario+"\n";
-		sResultado += "Contraseña: "+Contrasena+"\n";
+		sResultado += "Contrasenia: "+Contrasena+"\n";
 		return sResultado;
 	}
 	
