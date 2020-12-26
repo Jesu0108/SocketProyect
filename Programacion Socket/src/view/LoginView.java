@@ -13,7 +13,7 @@ public class LoginView {
 		sUsuario = valida.leer("Introduce un Usuario");
 		sContrasena = valida.leer("Introduce una Contraseña");
 
-		if (oCamion.ClienteExiste(new Camion(sUsuario, sContrasena))) {
+		if (oCamion.CamionLogueado(new Camion(sUsuario, sContrasena))) {
 			bExito = true;
 		} else {
 			bExito = false;
@@ -32,7 +32,7 @@ public class LoginView {
 		sUsuario = valida.leer("Introduce un Usuario");
 		sContrasena = valida.leer("Introduce una Contraseña");
 		// Si existe este usuario
-		if (oCamion.ClienteExiste(new Camion(sUsuario, sContrasena))) {
+		if (oCamion.CamionExiste(new Camion(sUsuario))) {
 			bExito = false;
 		} else {
 			oCamion.add(new Camion(sUsuario, sContrasena));

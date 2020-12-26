@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,11 +18,15 @@ import modelo.Cubo;
 public class ServidorView {
 
 	public class Control {
-
+		// Esta cola es la de los cubos que le llegan al servidor
 		Queue<Cubo> cubos = new LinkedList<Cubo>();
+		// Esta cola es la de los cubos que han llegado al servidor teniendo que
+		// tratarse
+		// por su peso, es decir, necesitan de un camion, pero no habiendo ninguno
+		// logueado
+		Queue<Cubo> cubosEsperando = new LinkedList<Cubo>();
 		Semaphore semaforo = new Semaphore(0);
 		private final int PUERTO = 1234;
-		private final String HOST = "25.85.119.209";
 		Socket socketContenedor;
 		Socket socketCamion;
 		Cubo cubo;
@@ -38,32 +43,30 @@ public class ServidorView {
 	}
 
 	private final Control control = new Control();
+	private static int u = 0;
 
 	public class Enviar implements Runnable {
 
 		@Override
 		public void run() {
 
-			DataOutputStream salidaMensaje;
+			DataOutputStream salidaMensaje = null;
 
-			try {
-				while (true) {
+			while (true) {
+				try {
+					if (control.camionesLogueados.size() == (u+1) && u!=0) {
+						u = 0;
+						organizacionCamiones(salidaMensaje);
+					} else {
+						organizacionCamiones(salidaMensaje);
+					}
 
-					control.semaforo.acquire();
-					control.socketCamion = new Socket(control.HOST, control.PUERTO);
-					salidaMensaje = new DataOutputStream(control.socketCamion.getOutputStream());
-					// Le envio un mensaje
-					salidaMensaje.writeUTF("Es necesario vaciar el contenedor con id: " + control.cubo.getiIdCubo());
-
-					salidaMensaje.close();
-					control.socketCamion.close();
+				} catch (IOException e) {
+					control.camionesLogueados.remove(u);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
 			}
-
 		}
 
 	}
@@ -132,34 +135,54 @@ public class ServidorView {
 
 		}
 
-		private void llamar112() {
+	}
 
-			System.out.println("Se ha realizado una llamada al servicio de emergencia"
-					+ " para que se encargue de la situación del contenedor con id: " + control.cubo.getiIdCubo());
+	private void llamar112() {
 
-		}
+		System.out.println("Se ha realizado una llamada al servicio de emergencia"
+				+ " para que se encargue de la situación del contenedor con id: " + control.cubo.getiIdCubo());
 
-		private void accionCubo() {
+	}
 
-			control.cubo = control.cubos.poll();
+	private void accionCubo() {
 
-			if (control.cubo.getiTemp() != 0 && control.cubo.getfPeso() == 0) {
+		control.cubo = control.cubos.poll();
 
-				System.out.println(control.cubo.toString());
-				llamar112();
+		if (control.cubo.getiTemp() != 0 && control.cubo.getfPeso() == 0) {
 
-			} else if (control.cubo.getiTemp() == 0 && control.cubo.getfPeso() != 0) {
-				System.out.println(control.cubo.toString());
-				control.semaforo.release();
+			System.out.println(control.cubo.toString());
+			llamar112();
 
+		} else if (control.cubo.getiTemp() == 0 && control.cubo.getfPeso() != 0) {
+			if (control.camionesLogueados.size() == 0) {
+				control.cubosEsperando.add(control.cubo);
 			} else {
-				System.out.println(control.cubo.toString());
-				System.out.println("Este cubo no requiere atención");
-
+				control.semaforo.release();
 			}
 
+		} else {
+			System.out.println(control.cubo.toString());
+			System.out.println("Este cubo no requiere atención");
+
 		}
 
+	}
+
+	private void organizacionCamiones(DataOutputStream salidaMensaje)
+			throws InterruptedException, UnknownHostException, IOException {
+
+		for (int iContador = u; iContador < control.camionesLogueados.size(); iContador++) {
+			u = iContador;
+			control.semaforo.acquire();
+			control.socketCamion = new Socket(control.camionesLogueados.get(iContador), control.PUERTO);
+			salidaMensaje = new DataOutputStream(control.socketCamion.getOutputStream());
+			// Le envio un mensaje
+			salidaMensaje.writeUTF(
+					"Es necesario vaciar el contenedor con id: " + control.cubosEsperando.poll().getiIdCubo());
+
+			salidaMensaje.close();
+			control.socketCamion.close();
+		}
 	}
 
 	public void executeMultiThreading() {
