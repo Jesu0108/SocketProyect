@@ -10,6 +10,7 @@ public class CubosView {
 
 	// INFO HOST
 	final int PUERTO = 1234;
+	
 	// -------------IPs HOST-------------
 
 	// private static String HOSTJESUS = "25.85.14.114";
