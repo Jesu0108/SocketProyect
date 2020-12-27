@@ -10,7 +10,7 @@ public class CubosView {
 
 	// INFO HOST
 	final int PUERTO = 1234;
-	
+
 	// -------------IPs HOST-------------
 
 	// private static String HOSTJESUS = "25.85.14.114";
@@ -57,8 +57,8 @@ public class CubosView {
 					ObjectOutputStream oCubo = new ObjectOutputStream(socket.getOutputStream());
 
 					/*
-					 * Si el peso o la temperatura del cubo son altos
-					 * Enviamos un mensaje al servidor
+					 * Si el peso o la temperatura del cubo son altos Enviamos un mensaje al
+					 * servidor
 					 */
 
 					if (calorCubo()) {
@@ -73,19 +73,16 @@ public class CubosView {
 						Thread.sleep(1000);
 
 					} else if (pesoCubo()) {
-
 						/*
-						 * Si consideramos que el peso del cubo es importante, le enviamos al
-						 * servidor el valor de la temperatura a 0 ya que este ultimo es irrelevante
+						 * Si consideramos que el peso del cubo es importante, le enviamos al servidor
+						 * el valor de la temperatura a 0 ya que este ultimo es irrelevante
 						 */
 						oCubo.writeObject(new Cubo(getiId(), 0, fPesoCubo));
 
 						// Lo dormimos para que sea mas facil de leer
 						Thread.sleep(1000);
 					} else {
-
 						oCubo.writeObject(new Cubo(getiId(), iTempCubo, fPesoCubo));
-
 						// Lo dormimos para que sea mas facil de leer
 						Thread.sleep(1000);
 					}
@@ -122,9 +119,9 @@ public class CubosView {
 
 	// ---------------------------------------------------------------------------------------------------------
 
-	
 	/*
-	 * Esta funcion coprueba si el calor del cubo es suficiente como para notificarlo al servidor
+	 * Esta funcion coprueba si el calor del cubo es suficiente como para
+	 * notificarlo al servidor
 	 */
 	public static boolean calorCubo() {
 		boolean boFuego = false;
@@ -143,7 +140,8 @@ public class CubosView {
 	}
 
 	/*
-	 * Esta funcion coprueba si el peso del cubo es suficiente como para notificarlo al servidor
+	 * Esta funcion coprueba si el peso del cubo es suficiente como para notificarlo
+	 * al servidor
 	 */
 	public static boolean pesoCubo() {
 		boolean boRecoger = false;
