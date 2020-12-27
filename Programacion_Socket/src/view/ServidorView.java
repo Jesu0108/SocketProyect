@@ -26,12 +26,19 @@ public class ServidorView {
 		 * ninguno logueado
 		 */
 		Queue<Cubo> cubosEsperando = new LinkedList<Cubo>();
+		// Semaforo usado para abrir el hilo para enviar a los camiones solo si hay
+		// cubos que necesiten atencion
 		Semaphore semaforo = new Semaphore(0);
+		// Puerto de coneccion con los camiones
 		private final int PUERTOCAMION = 5678;
+		// Puerto de coneccion con los cubos
 		private final int PUERTOCUBO = 1234;
 		Socket socketContenedor;
 		Socket socketCamion;
+		// Variable que empleamos para manejar los cubos que recojemos al hacer .poll a
+		// la cola
 		Cubo cubo;
+		// Guardamos en una lista de Strings las ip de los camiones que estan logueados
 		List<String> camionesLogueados = new ArrayList<String>();
 
 		public Semaphore getSemaforo() {
@@ -45,7 +52,6 @@ public class ServidorView {
 	}
 
 	private final Control control = new Control();
-	private static int u = 0;
 
 	public class Enviar implements Runnable {
 
@@ -62,9 +68,9 @@ public class ServidorView {
 					organizacionCamiones(salidaMensaje);
 
 				} catch (IOException e) {
-					control.camionesLogueados.remove(u);
+					System.err.println("Error: " + e.getMessage());
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					System.err.println("Error: " + e.getMessage());
 				}
 			}
 		}
@@ -95,12 +101,18 @@ public class ServidorView {
 					entradaObjeto = new ObjectInputStream(control.socketContenedor.getInputStream());
 					control.cubos.add((Cubo) entradaObjeto.readObject());
 
-					// Compruebo el objeto que le llega al servidor para saber si la petición
-					// enviada por el contenedor de basura
-					// es relacionado con la temperatura o con el peso dado que si no supera el
-					// limite de ambos no envia ninguna petición.
+					/*
+					 * Compruebo el objeto que le llega al servidor para saber si la petición //
+					 * enviada por el contenedor de basura // es relacionado con la temperatura o
+					 * con el peso dado que si no supera el // limite de ambos no envia ninguna
+					 * petición.
+					 */
+
+					// Llamamos a la funcion que gestione la informacion de los cubos que le llegan
+					// al servidor
 					accionCubo();
 
+					// Cerramos los flujos y sockets
 					entradaObjeto.close();
 					control.socketContenedor.close();
 					System.out.println("Conexion terminada Cubo--------------------------\n");
@@ -140,7 +152,6 @@ public class ServidorView {
 					// Cierro el socket
 					entradaMensaje.close();
 					control.socketContenedor.close();
-					System.out.println("Conexion terminada--------------------------\n");
 				}
 			} catch (IOException e) {
 				System.err.println("Error " + e.getMessage());
@@ -159,14 +170,20 @@ public class ServidorView {
 
 	private void accionCubo() {
 
+		// Guardamos los cubos de la cola en una variable para poder interactuar con
+		// ella cuanto queramos
 		control.cubo = control.cubos.poll();
 
+		// Es la condición para gestionar los cubos que necesitan atencion por su
+		// temperatura
 		if (control.cubo.getiTemp() != 0 && control.cubo.getfPeso() == 0) {
 
 			System.out.println(control.cubo.toString());
 			llamar112();
 
-		} else if (control.cubo.getiTemp() == 0 && control.cubo.getfPeso() != 0) {
+		}
+		// Es la condicion para gestionar los cubos que necesitan atencion segun su peso
+		else if (control.cubo.getiTemp() == 0 && control.cubo.getfPeso() != 0) {
 			System.out.println(control.cubo.toString());
 			if (control.camionesLogueados.size() == 0) {
 				control.cubosEsperando.add(control.cubo);
@@ -175,7 +192,9 @@ public class ServidorView {
 				control.semaforo.release();
 			}
 
-		} else {
+		}
+		// Es la condicion para gestionar los cubos que no necestian atencion ninguna
+		else {
 			System.out.println(control.cubo.toString());
 			System.out.println("Este cubo no requiere atención");
 
@@ -186,14 +205,15 @@ public class ServidorView {
 	private void organizacionCamiones(DataOutputStream salidaMensaje)
 			throws InterruptedException, UnknownHostException, IOException {
 		Thread.sleep(3000);
+
+		// For necesario para enviar los cubos a los distintos camiones logueados
 		for (int iContador = 0; iContador < control.camionesLogueados.size()
 				&& iContador < control.cubosEsperando.size(); iContador++) {
 
 			control.socketCamion = new Socket(control.camionesLogueados.get(iContador), control.PUERTOCAMION);
 			salidaMensaje = new DataOutputStream(control.socketCamion.getOutputStream());
-			// Le envio un mensaje
-			salidaMensaje.writeUTF(
-					"Es necesario vaciar el contenedor con id: " + control.cubosEsperando.poll().getiIdCubo());
+			// Le envio el id del cubo
+			salidaMensaje.writeUTF("" + control.cubosEsperando.poll().getiIdCubo());
 
 			salidaMensaje.close();
 			control.socketCamion.close();
