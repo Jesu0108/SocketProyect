@@ -46,8 +46,8 @@ public class CubosView {
 			try {
 
 				while (true) {
-					
-					//Reseteamos los valores a 0
+
+					// Reseteamos los valores a 0
 					iTempCubo = 0;
 					fPesoCubo = 0;
 
@@ -55,19 +55,28 @@ public class CubosView {
 					Socket socket = new Socket(HOSTALBERTO, PUERTO);
 					ObjectOutputStream oCubo = new ObjectOutputStream(socket.getOutputStream());
 
-					// Si el peso o la temperatura del cubo son altos
-					// Enviamos un mensaje al servidor
-					
-					
+					/*
+					 * Si el peso o la temperatura del cubo son altos
+					 * Enviamos un mensaje al servidor
+					 */
+
 					if (calorCubo()) {
-						
+						/*
+						 * Si consideramos que la temperatura del cubo es importante, le enviamos al
+						 * servidor el valor del peso a 0 ya que este ultimo es irrelevante
+						 */
+
 						oCubo.writeObject(new Cubo(getiId(), iTempCubo, 0));
 
 						// Lo dormimos para que sea mas facil de leer
 						Thread.sleep(1000);
 
 					} else if (pesoCubo()) {
-						
+
+						/*
+						 * Si consideramos que el peso del cubo es importante, le enviamos al
+						 * servidor el valor de la temperatura a 0 ya que este ultimo es irrelevante
+						 */
 						oCubo.writeObject(new Cubo(getiId(), 0, fPesoCubo));
 
 						// Lo dormimos para que sea mas facil de leer
@@ -83,7 +92,7 @@ public class CubosView {
 					socket.close();
 				}
 			} catch (IOException | InterruptedException e) {
-				System.out.println("Error al conectar");
+				System.err.println("Error al conectar");
 
 			}
 
@@ -110,6 +119,12 @@ public class CubosView {
 		}
 	}
 
+	// ---------------------------------------------------------------------------------------------------------
+
+	
+	/*
+	 * Esta funcion coprueba si el calor del cubo es suficiente como para notificarlo al servidor
+	 */
 	public static boolean calorCubo() {
 		boolean boFuego = false;
 		int iGrados = 0;
@@ -126,6 +141,9 @@ public class CubosView {
 		return boFuego;
 	}
 
+	/*
+	 * Esta funcion coprueba si el peso del cubo es suficiente como para notificarlo al servidor
+	 */
 	public static boolean pesoCubo() {
 		boolean boRecoger = false;
 		float fPeso = 0;
