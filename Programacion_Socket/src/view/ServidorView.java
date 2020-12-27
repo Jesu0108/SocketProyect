@@ -54,7 +54,7 @@ public class ServidorView {
 
 			while (true) {
 				try {
-					if (control.camionesLogueados.size() == (u+1) && u!=0) {
+					if (control.camionesLogueados.size() == (u + 1) && u != 0) {
 						u = 0;
 						organizacionCamiones(salidaMensaje);
 					} else {
@@ -94,23 +94,11 @@ public class ServidorView {
 
 					System.out.println("Cliente conectado--------------------------");
 					entradaMensaje = new DataInputStream(control.socketContenedor.getInputStream());
-
 					// Leo el mensaje que me envia
 					String mensaje = entradaMensaje.readUTF();
 
-					// Aniadimos el mensaje que llega de los camiones para introducirlo en una lista
-					// y asi saber los que estan logueados
-					control.camionesLogueados.add(mensaje);
+					if (mensaje.equals("cubo")) {
 
-					// Cierro el socket
-					entradaMensaje.close();
-
-					servidor.close();
-					System.out.println("Conexion terminada--------------------------\n");
-
-				} catch (IOException ex) {
-
-					try {
 						entradaObjeto = new ObjectInputStream(control.socketContenedor.getInputStream());
 						control.cubos.add((Cubo) entradaObjeto.readObject());
 
@@ -121,15 +109,25 @@ public class ServidorView {
 						accionCubo();
 
 						entradaObjeto.close();
+						entradaMensaje.close();
 						servidor.close();
 						control.socketContenedor.close();
 						System.out.println("Conexion terminada--------------------------\n");
+					} else {
+						// Aniadimos el mensaje que llega de los camiones para introducirlo en una lista
+						// y asi saber los que estan logueados
+						control.camionesLogueados.add(mensaje);
+						// Cierro el socket
+						entradaMensaje.close();
 
-					} catch (IOException e) {
-						System.err.println(e.getMessage());
-					} catch (ClassNotFoundException e) {
-						System.err.println(e.getMessage());
+						servidor.close();
+						System.out.println("Conexion terminada--------------------------\n");
 					}
+
+				} catch (IOException ex) {
+					System.err.println(ex.getMessage());
+				} catch (ClassNotFoundException e) {
+					System.err.println(e.getMessage());
 				}
 			}
 
