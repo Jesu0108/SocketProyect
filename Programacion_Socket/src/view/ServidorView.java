@@ -20,13 +20,14 @@ public class ServidorView {
 	public class Control {
 		// Esta cola es la de los cubos que le llegan al servidor
 		Queue<Cubo> cubos = new LinkedList<Cubo>();
-		// Esta cola es la de los cubos que han llegado al servidor teniendo que
-		// tratarse
-		// por su peso, es decir, necesitan de un camion, pero no habiendo ninguno
-		// logueado
+		/*
+		 * Esta cola es la de los cubos que han llegado al servidor teniendo que
+		 * tratarse por su peso, es decir, necesitan de un camion, pero no habiendo
+		 * ninguno logueado
+		 */
 		Queue<Cubo> cubosEsperando = new LinkedList<Cubo>();
 		Semaphore semaforo = new Semaphore(0);
-		private final int PUERTOCAMION = 9999;
+		private final int PUERTOCAMION = 5678;
 		private final int PUERTOCUBO = 1234;
 		Socket socketContenedor;
 		Socket socketCamion;
@@ -55,17 +56,10 @@ public class ServidorView {
 
 			while (true) {
 				try {
-					
-//					control.semaforo.acquire();
-//					control.socketCamion = new Socket(control.camionesLogueados.get(0),control.PUERTOCAMION);
-//					System.out.println(control.camionesLogueados.get(0));
-//					salidaMensaje = new DataOutputStream(control.socketCamion.getOutputStream());
-//					String mensaje = "" + control.cubosEsperando.poll().getiIdCubo();
-//					System.out.println(mensaje);
-//					salidaMensaje.writeUTF(mensaje);
-//					System.out.println("Mensaje enviado");
-					
-				organizacionCamiones(salidaMensaje);
+
+					control.semaforo.acquire();
+
+					organizacionCamiones(salidaMensaje);
 
 				} catch (IOException e) {
 					control.camionesLogueados.remove(u);
@@ -191,14 +185,15 @@ public class ServidorView {
 
 	private void organizacionCamiones(DataOutputStream salidaMensaje)
 			throws InterruptedException, UnknownHostException, IOException {
+		Thread.sleep(3000);
+		for (int iContador = 0; iContador < control.camionesLogueados.size()
+				&& iContador < control.cubosEsperando.size(); iContador++) {
 
-		for (int iContador = 0; iContador < control.camionesLogueados.size() || iContador < control.cubosEsperando.size(); iContador++) {
-			
-			control.semaforo.acquire();
 			control.socketCamion = new Socket(control.camionesLogueados.get(iContador), control.PUERTOCAMION);
 			salidaMensaje = new DataOutputStream(control.socketCamion.getOutputStream());
 			// Le envio un mensaje
-			salidaMensaje.writeUTF("Es necesario vaciar el contenedor con id: " + control.cubosEsperando.poll().getiIdCubo());
+			salidaMensaje.writeUTF(
+					"Es necesario vaciar el contenedor con id: " + control.cubosEsperando.poll().getiIdCubo());
 
 			salidaMensaje.close();
 			control.socketCamion.close();
