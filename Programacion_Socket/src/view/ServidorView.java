@@ -102,9 +102,9 @@ public class ServidorView {
 					control.cubos.add((Cubo) entradaObjeto.readObject());
 
 					/*
-					 * Compruebo el objeto que le llega al servidor para saber si la petición //
-					 * enviada por el contenedor de basura // es relacionado con la temperatura o
-					 * con el peso dado que si no supera el // limite de ambos no envia ninguna
+					 * Compruebo el objeto que le llega al servidor para saber si la petición
+					 * enviada por el contenedor de basura es relacionado con la temperatura o
+					 * con el peso dado que si no supera el limite de ambos no envia ninguna
 					 * petición.
 					 */
 
