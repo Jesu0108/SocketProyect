@@ -26,7 +26,8 @@ public class ServidorView {
 		// logueado
 		Queue<Cubo> cubosEsperando = new LinkedList<Cubo>();
 		Semaphore semaforo = new Semaphore(0);
-		private final int PUERTO = 1234;
+		private final int PUERTOCAMION = 8888;
+		private final int PUERTOCUBO = 1234;
 		Socket socketContenedor;
 		Socket socketCamion;
 		Cubo cubo;
@@ -54,12 +55,21 @@ public class ServidorView {
 
 			while (true) {
 				try {
-					if (control.camionesLogueados.size() == (u + 1) && u != 0) {
-						u = 0;
-						organizacionCamiones(salidaMensaje);
-					} else {
-						organizacionCamiones(salidaMensaje);
-					}
+					
+					control.semaforo.acquire();
+					control.socketCamion = new Socket(control.camionesLogueados.get(0),control.PUERTOCAMION);
+					System.out.println(control.camionesLogueados.get(0));
+					salidaMensaje = new DataOutputStream(control.socketCamion.getOutputStream());
+					String mensaje = "" + control.cubosEsperando.poll().getiIdCubo();
+					System.out.println(mensaje);
+					salidaMensaje.writeUTF(mensaje);
+					System.out.println("Mensaje enviado");
+//					if (control.camionesLogueados.size() == (u + 1) && u != 0) {
+//						u = 0;
+//						organizacionCamiones(salidaMensaje);
+//					} else {
+//						organizacionCamiones(salidaMensaje);
+//					}
 
 				} catch (IOException e) {
 					control.camionesLogueados.remove(u);
@@ -71,64 +81,79 @@ public class ServidorView {
 
 	}
 
-	public class Recibir implements Runnable {
+	public class RecibirCubo implements Runnable {
 
 		@Override
 		public void run() {
-			ServerSocket servidor = null;
-
-			DataInputStream entradaMensaje;
+			ServerSocket servidor;
 			ObjectInputStream entradaObjeto;
 
-			while (true) {
-				try {
-					// Creamos el socket del servidor
-
-					servidor = new ServerSocket(control.PUERTO);
-					System.out.println("*Servidor iniciado*\n");
+			try {
+				// Creamos el socket del servidor
+				servidor = new ServerSocket(control.PUERTOCUBO);
+				System.out.println("*Esperando cubo*\n");
+				while (true) {
 
 					// Siempre estara escuchando peticiones
 
 					// Espero a que un cliente se conecte
 					control.socketContenedor = servidor.accept();
 
-					System.out.println("Cliente conectado--------------------------");
-					entradaMensaje = new DataInputStream(control.socketContenedor.getInputStream());
+					System.out.println("Cubo conectado--------------------------");
 					// Leo el mensaje que me envia
-					String mensaje = entradaMensaje.readUTF();
 
-					if (mensaje.equals("cubo")) {
+					entradaObjeto = new ObjectInputStream(control.socketContenedor.getInputStream());
+					control.cubos.add((Cubo) entradaObjeto.readObject());
 
-						entradaObjeto = new ObjectInputStream(control.socketContenedor.getInputStream());
-						control.cubos.add((Cubo) entradaObjeto.readObject());
+					// Compruebo el objeto que le llega al servidor para saber si la petición
+					// enviada por el contenedor de basura
+					// es relacionado con la temperatura o con el peso dado que si no supera el
+					// limite de ambos no envia ninguna petición.
+					accionCubo();
 
-						// Compruebo el objeto que le llega al servidor para saber si la petición
-						// enviada por el contenedor de basura
-						// es relacionado con la temperatura o con el peso dado que si no supera el
-						// limite de ambos no envia ninguna petición.
-						accionCubo();
-
-						entradaObjeto.close();
-						entradaMensaje.close();
-						servidor.close();
-						control.socketContenedor.close();
-						System.out.println("Conexion terminada--------------------------\n");
-					} else {
-						// Aniadimos el mensaje que llega de los camiones para introducirlo en una lista
-						// y asi saber los que estan logueados
-						control.camionesLogueados.add(mensaje);
-						// Cierro el socket
-						entradaMensaje.close();
-
-						servidor.close();
-						System.out.println("Conexion terminada--------------------------\n");
-					}
-
-				} catch (IOException ex) {
-					System.err.println(ex.getMessage());
-				} catch (ClassNotFoundException e) {
-					System.err.println(e.getMessage());
+					entradaObjeto.close();
+					control.socketContenedor.close();
+					System.out.println("Conexion terminada Cubo--------------------------\n");
 				}
+			} catch (IOException ex) {
+				System.err.println(ex.getMessage());
+			} catch (ClassNotFoundException e) {
+				System.err.println(e.getMessage());
+			}
+		}
+
+	}
+
+	public class RecibirCamion implements Runnable {
+
+		@Override
+		public void run() {
+			ServerSocket servidor = null;
+			DataInputStream entradaMensaje;
+
+			try {
+				servidor = new ServerSocket(control.PUERTOCAMION);
+				System.out.println("*Esperando camion*\n");
+
+				while (true) {
+					control.socketContenedor = servidor.accept();
+					System.out.println("Camion conectado--------------------------");
+
+					entradaMensaje = new DataInputStream(control.socketContenedor.getInputStream());
+
+					String mensaje = entradaMensaje.readUTF();
+					System.out.println(mensaje);
+
+					// Aniadimos el mensaje que llega de los camiones para introducirlo en una lista
+					// y asi saber los que estan logueados
+					control.camionesLogueados.add(mensaje);
+					// Cierro el socket
+					entradaMensaje.close();
+					control.socketContenedor.close();
+					System.out.println("Conexion terminada--------------------------\n");
+				}
+			} catch (IOException e) {
+				System.err.println("Error " + e.getMessage());
 			}
 
 		}
@@ -152,10 +177,12 @@ public class ServidorView {
 			llamar112();
 
 		} else if (control.cubo.getiTemp() == 0 && control.cubo.getfPeso() != 0) {
+			System.out.println(control.cubo.toString());
 			if (control.camionesLogueados.size() == 0) {
 				control.cubosEsperando.add(control.cubo);
 			} else {
 				control.semaforo.release();
+				control.cubosEsperando.add(control.cubo);
 			}
 
 		} else {
@@ -172,7 +199,7 @@ public class ServidorView {
 		for (int iContador = u; iContador < control.camionesLogueados.size(); iContador++) {
 			u = iContador;
 			control.semaforo.acquire();
-			control.socketCamion = new Socket(control.camionesLogueados.get(iContador), control.PUERTO);
+			control.socketCamion = new Socket(control.camionesLogueados.get(iContador), control.PUERTOCAMION);
 			salidaMensaje = new DataOutputStream(control.socketCamion.getOutputStream());
 			// Le envio un mensaje
 			salidaMensaje.writeUTF(
@@ -186,8 +213,8 @@ public class ServidorView {
 	public void executeMultiThreading() {
 
 		new Thread(new Enviar()).start();
-		new Thread(new Recibir()).start();
-
+		new Thread(new RecibirCubo()).start();
+		new Thread(new RecibirCamion()).start();
 	}
 
 	public static void main(String args[]) {
