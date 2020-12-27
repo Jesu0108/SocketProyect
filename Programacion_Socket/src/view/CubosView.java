@@ -97,7 +97,7 @@ public class CubosView {
 
 		for (int i = 0; i < iNumCubos; i++) {
 			new Thread(new Enviador(i)).start();
-			Thread.sleep(300);
+			Thread.sleep(1000);
 		}
 	}
 
