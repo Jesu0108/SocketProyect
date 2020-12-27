@@ -17,7 +17,7 @@ import validacion.valida;
 
 public class CamionView {
 	public class Control {
-		final int PUERTO = 1234;
+		final int PUERTO = 8888;
 
 		CamionCtrl oCamion = new CamionCtrl();
 		// IP HOST
@@ -27,8 +27,6 @@ public class CamionView {
 		private final String HOSTCHUCU = "25.85.119.209";
 		private Socket socket;
 
-		// USUARIO
-		private final int iNumEmpleados = 5;
 		// QUEUE
 		private Queue<String> listCubos = new LinkedList<String>();
 	}
@@ -52,7 +50,7 @@ public class CamionView {
 				mensaje.writeUTF(control.HOSTCHUCU);
 				// Cerramos el socket
 
-				control.socket.close();
+				//control.socket.close();
 				Thread.sleep(2000);
 			} catch (Exception e) {
 				System.err.println("ERROR " + e.getMessage());
@@ -80,7 +78,6 @@ public class CamionView {
 					control.socket = servidor.accept();
 
 					entradaMensaje = new DataInputStream(control.socket.getInputStream());
-
 					// Leo el mensaje que me envia
 
 					control.listCubos.add(entradaMensaje.readUTF());
