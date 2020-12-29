@@ -6,7 +6,7 @@ import java.net.Socket;
 
 import modelo.Cubo;
 
-public class CubosView {
+public class CuboView {
 
 	// INFO HOST
 	final int PUERTO = 1234;
@@ -110,7 +110,7 @@ public class CubosView {
 	public static void main(String[] args) {
 
 		try {
-			CubosView cubos = new CubosView();
+			CuboView cubos = new CuboView();
 			cubos.executeMultiThreading();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
