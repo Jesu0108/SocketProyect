@@ -30,7 +30,7 @@ public class ServidorView {
 		// cubos que necesiten atencion
 		Semaphore semaforo = new Semaphore(0);
 		// Puerto de coneccion con los camiones
-		private final int PUERTOCAMION = 5678;
+		private final int PUERTOCAMION = 9999;
 		// Puerto de coneccion con los cubos
 		private final int PUERTOCUBO = 1234;
 		Socket socketContenedor;
