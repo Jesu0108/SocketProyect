@@ -14,9 +14,13 @@ public class Server {
 	public static void main(String[] arg) throws IOException {
         
         
-       System.setProperty("javax.net.ssl.keyStore", System.getProperty("user.dir") + "\\AlmacenSSL");
-       System.setProperty("javax.net.ssl.keyStorePassword", "1234567");
+       //System.setProperty("javax.net.ssl.keyStore", System.getProperty("keytool") + "\\clientTrustedCerts.jks");
+       //System.setProperty("javax.net.ssl.keyStorePassword", "medac2020");
        
+		System.setProperty("javax.net.ssl.keyStore", "keytool/socketKey.jks");
+        System.setProperty("javax.net.ssl.keyStorePassword","medac2020");
+        System.setProperty("javax.net.ssl.trustStore", "keytool/clientTrustedCerts.jks");
+        System.setProperty("javax.net.ssl.trustStorePassword", "medac2020");
        
         int puerto = 9999;
         SSLServerSocketFactory sfact = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
