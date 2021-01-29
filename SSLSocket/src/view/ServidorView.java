@@ -4,7 +4,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -12,6 +11,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.Semaphore;
+import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLServerSocketFactory;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 
 import modelo.Cubo;
 
@@ -20,6 +23,7 @@ public class ServidorView {
 	public class Control {
 		// Esta cola es la de los cubos que le llegan al servidor
 		Queue<Cubo> cubos = new LinkedList<Cubo>();
+		SSLSocket clienteConectado = null;
 		/*
 		 * Esta cola es la de los cubos que han llegado al servidor teniendo que
 		 * tratarse por su peso, es decir, necesitan de un camion, pero no habiendo
@@ -30,7 +34,7 @@ public class ServidorView {
 		// cubos que necesiten atencion
 		Semaphore semaforo = new Semaphore(0);
 		// Puerto de coneccion con los camiones
-		private final int PUERTOCAMION = 5678;
+		private final int PUERTOCAMION = 9999;
 		// Puerto de coneccion con los cubos
 		private final int PUERTOCUBO = 1234;
 		Socket socketContenedor;
@@ -68,9 +72,9 @@ public class ServidorView {
 					organizacionCamiones(salidaMensaje);
 
 				} catch (IOException e) {
-					System.err.println("Error: " + e.getMessage());
+					System.err.println("Error atun: " + e.getMessage());
 				} catch (InterruptedException e) {
-					System.err.println("Error: " + e.getMessage());
+					System.err.println("Error nb: " + e.getMessage());
 				}
 			}
 		}
@@ -81,25 +85,27 @@ public class ServidorView {
 
 		@Override
 		public void run() {
-			ServerSocket servidor;
-			ObjectInputStream entradaObjeto;
+			
 
 			try {
 				// Creamos el socket del servidor
-				servidor = new ServerSocket(control.PUERTOCUBO);
+				SSLServerSocketFactory sfact = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
+		        SSLServerSocket servidorSSL = (SSLServerSocket) sfact.createServerSocket(control.PUERTOCUBO);
+		        SSLSocket clienteConectado = null;
+		        ObjectInputStream flujoEntrada = null;
+		        
 				System.out.println("*Esperando cubo*\n");
 				while (true) {
 
 					// Siempre estara escuchando peticiones
 
 					// Espero a que un cliente se conecte
-					control.socketContenedor = servidor.accept();
+					clienteConectado = (SSLSocket) servidorSSL.accept();
 
 					System.out.println("Cubo conectado--------------------------");
 					// Leo el mensaje que me envia
-
-					entradaObjeto = new ObjectInputStream(control.socketContenedor.getInputStream());
-					control.cubos.add((Cubo) entradaObjeto.readObject());
+					flujoEntrada = new ObjectInputStream(clienteConectado.getInputStream());
+					control.cubos.add((Cubo) flujoEntrada.readObject());
 
 					/*
 					 * Compruebo el objeto que le llega al servidor para saber si la petición
@@ -113,8 +119,7 @@ public class ServidorView {
 					accionCubo();
 
 					// Cerramos los flujos y sockets
-					entradaObjeto.close();
-					control.socketContenedor.close();
+					flujoEntrada.close();
 					System.out.println("Conexion terminada Cubo--------------------------\n");
 				}
 			} catch (IOException ex) {
@@ -130,31 +135,32 @@ public class ServidorView {
 
 		@Override
 		public void run() {
-			ServerSocket servidor = null;
-			DataInputStream entradaMensaje;
+			SSLServerSocketFactory sfact = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
+	        
+	        DataInputStream flujoEntrada = null;
 
 			try {
-				servidor = new ServerSocket(control.PUERTOCAMION);
+				SSLServerSocket servidorSSL = (SSLServerSocket) sfact.createServerSocket(control.PUERTOCAMION);
 				System.out.println("*Esperando camion*\n");
 
 				while (true) {
-					control.socketContenedor = servidor.accept();
+					control.clienteConectado = (SSLSocket) servidorSSL.accept();
 					System.out.println("Camion conectado--------------------------");
 
-					entradaMensaje = new DataInputStream(control.socketContenedor.getInputStream());
 
-					String mensaje = entradaMensaje.readUTF();
+					flujoEntrada = new DataInputStream(control.clienteConectado.getInputStream());
+
+					String mensaje = flujoEntrada.readUTF();
 					System.out.println(mensaje);
 
 					// Aniadimos el mensaje que llega de los camiones para introducirlo en una lista
 					// y asi saber los que estan logueados
 					control.camionesLogueados.add(mensaje);
 					// Cierro el socket
-					entradaMensaje.close();
-					control.socketContenedor.close();
+					flujoEntrada.close();
 				}
 			} catch (IOException e) {
-				System.err.println("Error " + e.getMessage());
+				System.err.println("Error pene " + e.getMessage());
 			}
 
 		}
@@ -209,18 +215,23 @@ public class ServidorView {
 		// For necesario para enviar los cubos a los distintos camiones logueados
 		for (int iContador = 0; iContador < control.camionesLogueados.size()
 				&& iContador < control.cubosEsperando.size(); iContador++) {
-
-			control.socketCamion = new Socket(control.camionesLogueados.get(iContador), control.PUERTOCAMION);
-			salidaMensaje = new DataOutputStream(control.socketCamion.getOutputStream());
+			SSLSocketFactory sfact = (SSLSocketFactory) SSLSocketFactory.getDefault();
+	        SSLSocket cliente = (SSLSocket) sfact.createSocket(control.camionesLogueados.get(iContador), control.PUERTOCAMION);
+			
+			salidaMensaje = new DataOutputStream(cliente.getOutputStream());
 			// Le envio el id del cubo
 			salidaMensaje.writeUTF("" + control.cubosEsperando.poll().getiIdCubo());
 
+			
 			salidaMensaje.close();
-			control.socketCamion.close();
 		}
 	}
 
 	public void executeMultiThreading() {
+		System.setProperty("javax.net.ssl.keyStore", "keytool/socketKey.jks");
+        System.setProperty("javax.net.ssl.keyStorePassword","medac2020");
+        System.setProperty("javax.net.ssl.trustStore", "keytool/clientTrustedCerts.jks");
+        System.setProperty("javax.net.ssl.trustStorePassword", "medac2020");
 
 		new Thread(new Enviar()).start();
 		new Thread(new RecibirCubo()).start();
