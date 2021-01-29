@@ -2,7 +2,10 @@ package view;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.math.BigInteger;
+import java.security.cert.X509Certificate;
 
+import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
@@ -11,8 +14,8 @@ public class Cliente {
 	public static void main(String[] args) throws Exception {
         
         
-        //System.setProperty("javax.net.ssl.trustStore", System.getProperty("user.dir") + "\\UsuarioAlmacenSSL");
-        //System.setProperty("javax.net.ssl.trustStorePassword", "890123");
+        System.setProperty("javax.net.ssl.trustStore", System.getProperty("user.dir") + "\\UsuarioAlmacenSSL");
+        System.setProperty("javax.net.ssl.trustStorePassword", "890123");
        
         String Host = "localhost";
         int puerto = 6000;
@@ -33,7 +36,7 @@ public class Cliente {
         // EL SERVIDOR ME ENVIA UN MENSAJE
         System.out.println("Recibiendo del SERVIDOR: \n\t" + flujoEntrada.readUTF());
        
-        /*------------------------------------------------------------------------------
+        //------------------------------------------------------------------------------
         //Información sobre la sesión SSL
         SSLSession session = ((SSLSocket) Cliente).getSession(); 
         System.out.println("Host: "+session.getPeerHost());
@@ -48,7 +51,7 @@ public class Cliente {
         System.out.println("Tipo: " + certificate.getType());
         System.out.println("Emisor: " + certificate.getIssuerDN());
         System.out.println("Número Serie: " + certificate.getSerialNumber());
-        ------------------------------------------------------------------------------*/
+       // ------------------------------------------------------------------------------
        
         // CERRAR STREAMS Y SOCKETS
         flujoEntrada.close();

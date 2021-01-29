@@ -14,11 +14,11 @@ public class Server {
 	public static void main(String[] arg) throws IOException {
         
         
-        //System.setProperty("javax.net.ssl.keyStore", System.getProperty("user.dir") + "\\AlmacenSSL");
-        //System.setProperty("javax.net.ssl.keyStorePassword", "1234567");
+       System.setProperty("javax.net.ssl.keyStore", System.getProperty("user.dir") + "\\AlmacenSSL");
+       System.setProperty("javax.net.ssl.keyStorePassword", "1234567");
        
        
-        int puerto = 6000;
+        int puerto = 9999;
         SSLServerSocketFactory sfact = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
         SSLServerSocket servidorSSL = (SSLServerSocket) sfact.createServerSocket(puerto);
         SSLSocket clienteConectado = null;
@@ -26,7 +26,7 @@ public class Server {
         DataOutputStream flujoSalida = null; //FLUJO DE SALIDA AL CLIENTE
        
         for (int i = 1; i < 5; i++) {
-             
+            
               System.out.println("Esperando al cliente " + i);
               clienteConectado = (SSLSocket) servidorSSL.accept();
               flujoEntrada = new DataInputStream(clienteConectado.getInputStream());
