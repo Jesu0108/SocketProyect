@@ -53,8 +53,8 @@ public class CamionView {
 				
 				// El camion manda el host
 				mensaje.writeUTF(control.HOSTALBERTO);
-				// Cerramos el socket
-
+				// Cerramos el socket.
+				
 				control.sslSocket.close();
 				Thread.sleep(2000);
 			} catch (Exception e) {
