@@ -2,7 +2,9 @@ package view;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.net.Socket;
+
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 
 import modelo.Cubo;
 
@@ -45,7 +47,7 @@ public class CuboView {
 		public void run() {
 
 			try {
-
+				
 				while (true) {
 
 					// Reseteamos los valores a 0
@@ -53,8 +55,10 @@ public class CuboView {
 					fPesoCubo = 0;
 
 					// Creamos nuestro socket
-					Socket socket = new Socket(HOSTALBERTO, PUERTO);
-					ObjectOutputStream oCubo = new ObjectOutputStream(socket.getOutputStream());
+					SSLSocketFactory sfact = (SSLSocketFactory) SSLSocketFactory.getDefault();
+			        SSLSocket cliente = (SSLSocket) sfact.createSocket(HOSTALBERTO, PUERTO);
+			        
+					ObjectOutputStream oCubo = new ObjectOutputStream(cliente.getOutputStream());					
 
 					/*
 					 * Si el peso o la temperatura del cubo son altos Enviamos un mensaje al
@@ -87,7 +91,8 @@ public class CuboView {
 						Thread.sleep(1000);
 					}
 					// Cerramos el socket
-					socket.close();
+					oCubo.close();
+			        cliente.close();
 				}
 			} catch (IOException | InterruptedException e) {
 				System.err.println("Error al conectar");
@@ -108,8 +113,13 @@ public class CuboView {
 	}
 
 	public static void main(String[] args) {
-
 		try {
+			
+			System.setProperty("javax.net.ssl.keyStore", "keytool/socketKey.jks");
+	        System.setProperty("javax.net.ssl.keyStorePassword","medac2020");
+	        System.setProperty("javax.net.ssl.trustStore", "keytool/clientTrustedCerts.jks");
+	        System.setProperty("javax.net.ssl.trustStorePassword", "medac2020");
+			
 			CuboView cubos = new CuboView();
 			cubos.executeMultiThreading();
 		} catch (Exception e) {

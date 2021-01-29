@@ -4,10 +4,16 @@ import java.io.DataInputStream;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
 import java.util.Queue;
+
+import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLServerSocketFactory;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 
 import controller.CamionCtrl;
 
@@ -21,7 +27,7 @@ public class CamionView {
 		private final String HOSTSERGIO = "25.84.193.39";
 		private final String HOSTALBERTO = "25.84.175.186";
 		private final String HOSTCHUCU = "25.85.119.209";
-		private Socket socket;
+		private SSLSocket sslSocket;
 
 		// QUEUE
 		private Queue<String> listCubos = new LinkedList<String>();
@@ -35,18 +41,21 @@ public class CamionView {
 		public void run() {
 
 			try {
+				
 				// Variables
 				// El usuario entra a la opcion de usuario
 				LoginView.opcion_usuario();
 				// CREA SOCKET
-				control.socket = new Socket(control.HOSTALBERTO, control.PUERTO);
-				DataOutputStream mensaje = new DataOutputStream(control.socket.getOutputStream());
-
+				SSLSocketFactory sfact = (SSLSocketFactory) SSLSocketFactory.getDefault();
+		        SSLSocket camion = (SSLSocket) sfact.createSocket(control.HOSTALBERTO, control.PUERTO);
+		        
+		        DataOutputStream mensaje = new DataOutputStream(camion.getOutputStream());
+				
 				// El camion manda el host
-				mensaje.writeUTF(control.HOSTJESUS);
+				mensaje.writeUTF(control.HOSTALBERTO);
 				// Cerramos el socket
 
-				control.socket.close();
+				control.sslSocket.close();
 				Thread.sleep(2000);
 			} catch (Exception e) {
 				System.err.println("ERROR " + e.getMessage());
@@ -59,30 +68,27 @@ public class CamionView {
 
 		@Override
 		public void run() {
-			ServerSocket servidor = null;
-
-			DataInputStream entradaMensaje;
-
 			try {
 				// Creamos el socket del servidor
 
-				servidor = new ServerSocket(control.PUERTO);
+				SSLServerSocketFactory sfact = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
+		        SSLServerSocket servidorSSL = (SSLServerSocket) sfact.createServerSocket(control.PUERTO);
+		        DataInputStream mensajeServer = null;
 
 				// Siempre estara escuchando peticiones
 				while (true) {
 
-					control.socket = servidor.accept();
+					control.sslSocket = (SSLSocket) servidorSSL.accept();
 
-					entradaMensaje = new DataInputStream(control.socket.getInputStream());
+					mensajeServer = new DataInputStream(control.sslSocket.getInputStream());
 					// Leo el mensaje que me envia
 
-					control.listCubos.add(entradaMensaje.readUTF());
+					control.listCubos.add(mensajeServer.readUTF());
 					accionCamion();
 
-					// Cierro el socket
-					entradaMensaje.close();
-
-					control.socket.close();
+					// Cierro el SSLsocket
+					mensajeServer.close();
+					control.sslSocket.close();
 				}
 			} catch (IOException | InterruptedException ex) {
 				System.err.println("---Error de conexion: " + ex.getMessage());
@@ -113,6 +119,12 @@ public class CamionView {
 	}
 
 	public static void main(String[] args) {
+		
+		System.setProperty("javax.net.ssl.keyStore", "keytool/socketKey.jks");
+        System.setProperty("javax.net.ssl.keyStorePassword","medac2020");
+        System.setProperty("javax.net.ssl.trustStore", "keytool/clientTrustedCerts.jks");
+        System.setProperty("javax.net.ssl.trustStorePassword", "medac2020");
+		
 		CamionView oCamion = new CamionView();
 		oCamion.executeMultiThreading();
 	}
