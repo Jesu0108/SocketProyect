@@ -23,7 +23,6 @@ public class ServidorView {
 	public class Control {
 		// Esta cola es la de los cubos que le llegan al servidor
 		Queue<Cubo> cubos = new LinkedList<Cubo>();
-		SSLSocket clienteConectado = null;
 		/*
 		 * Esta cola es la de los cubos que han llegado al servidor teniendo que
 		 * tratarse por su peso, es decir, necesitan de un camion, pero no habiendo
@@ -72,9 +71,9 @@ public class ServidorView {
 					organizacionCamiones(salidaMensaje);
 
 				} catch (IOException e) {
-					System.err.println("Error atun: " + e.getMessage());
+					System.err.println("Error enviar: " + e.getMessage());
 				} catch (InterruptedException e) {
-					System.err.println("Error nb: " + e.getMessage());
+					System.err.println("Error: " + e.getMessage());
 				}
 			}
 		}
@@ -135,20 +134,22 @@ public class ServidorView {
 
 		@Override
 		public void run() {
-			SSLServerSocketFactory sfact = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
-	        
-	        DataInputStream flujoEntrada = null;
-
 			try {
-				SSLServerSocket servidorSSL = (SSLServerSocket) sfact.createServerSocket(control.PUERTOCAMION);
+			SSLServerSocketFactory sfact = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
+	        SSLServerSocket servidorSSL = (SSLServerSocket) sfact.createServerSocket(control.PUERTOCAMION);
+	        DataInputStream flujoEntrada = null;
+	        SSLSocket clienteConectado = null;
+			
+				
 				System.out.println("*Esperando camion*\n");
 
 				while (true) {
-					control.clienteConectado = (SSLSocket) servidorSSL.accept();
+					
+					clienteConectado = (SSLSocket) servidorSSL.accept();
 					System.out.println("Camion conectado--------------------------");
 
 
-					flujoEntrada = new DataInputStream(control.clienteConectado.getInputStream());
+					flujoEntrada = new DataInputStream(clienteConectado.getInputStream());
 
 					String mensaje = flujoEntrada.readUTF();
 					System.out.println(mensaje);
@@ -160,7 +161,7 @@ public class ServidorView {
 					flujoEntrada.close();
 				}
 			} catch (IOException e) {
-				System.err.println("Error pene " + e.getMessage());
+				System.err.println("Error recibir " + e.getMessage());
 			}
 
 		}
