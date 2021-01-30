@@ -3,6 +3,8 @@ package controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sql.rowset.CachedRowSet;
+
 import modelo.Camion;
 
 public class CamionCtrl implements ICamionCtrl {
@@ -12,9 +14,10 @@ public class CamionCtrl implements ICamionCtrl {
 	public void add(Camion oCamion) {
 
 		try {
-			String url = "http://socketdatabase.tk/insertar_camion.php?usuario=" + oCamion.getUsuario()
-					+ "&contrasenia=" + oCamion.getcontrasenia();
-			ConexionPHP.peticionHttp(url);
+			dbm.Dbm.openConnectionMySQL();
+			String query = "INSERT INTO CAMION (USUARIO, CONTRASENIA) VALUES ('"+oCamion.getUsuario()+"', '"+oCamion.getcontrasenia()+"'";
+			dbm.Dbm.ExecuteQuery(query);
+			dbm.Dbm.closeConnection();
 
 		} catch (Exception e) {
 
@@ -27,11 +30,11 @@ public class CamionCtrl implements ICamionCtrl {
 		boolean bCierto = false;
 
 		try {
-			String url = "http://socketdatabase.tk/getCamion.php?usuario=" + oCamion.getUsuario();
-			String respuesta = ConexionPHP.peticionHttp(url);
-
-			listCamion = ConexionPHP.JsonToCamiones(respuesta);
-
+			dbm.Dbm.openConnectionMySQL();
+			String query = "SELECT USUARIO FROM CAMION WHERE USUARIO = '"+oCamion.getUsuario()+"'";
+			CachedRowSet crs = dbm.Dbm.ExecuteQuery(query);
+			listCamion.add(new Camion(crs.getString("USUARIO"),null));
+			dbm.Dbm.closeConnection();
 			if (listCamion.isEmpty()) {
 				bCierto = false;
 			} else {
@@ -52,10 +55,11 @@ public class CamionCtrl implements ICamionCtrl {
 
 		try {
 
-			String url = "http://socketdatabase.tk/getCamionPassword.php?usuario=" + oCamion.getUsuario()
-					+ "&contrasenia=" + oCamion.getcontrasenia();
-			String respuesta = ConexionPHP.peticionHttp(url);
-			listCamion = ConexionPHP.JsonToCamiones(respuesta);
+			dbm.Dbm.openConnectionMySQL();
+			String query = "SELECT * FROM CAMION WHERE USUARIO = '"+oCamion.getUsuario()+ "' AND CONTRASENIA = '"+oCamion.getcontrasenia()+"'";
+			CachedRowSet crs = dbm.Dbm.ExecuteQuery(query);
+			listCamion.add(new Camion(crs.getString("USUARIO"),crs.getString("CONTRASENIA")));
+			dbm.Dbm.closeConnection();
 
 			if (listCamion.isEmpty()) {
 
