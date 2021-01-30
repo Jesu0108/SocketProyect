@@ -47,7 +47,7 @@ public class CamionView {
 				LoginView.opcion_usuario();
 				// CREA SOCKET
 				SSLSocketFactory sfact = (SSLSocketFactory) SSLSocketFactory.getDefault();
-				control.sslSocket = (SSLSocket) sfact.createSocket(control.HOSTALBERTO, control.PUERTO);
+				control.sslSocket = (SSLSocket) sfact.createSocket(control.HOSTJESUS, control.PUERTO);
 		        
 		        DataOutputStream mensaje = new DataOutputStream(control.sslSocket.getOutputStream());
 				
