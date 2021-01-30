@@ -26,7 +26,7 @@ public class CamionView {
 		private final String HOSTJESUS = "25.85.14.114";
 		private final String HOSTSERGIO = "25.84.193.39";
 		private final String HOSTALBERTO = "25.84.175.186";
-		private final String HOSTCHUCU = "25.85.119.209";
+		private final String HOSTCHUCU = "25.98.3.115";
 		private SSLSocket sslSocket;
 
 		// QUEUE
@@ -52,7 +52,7 @@ public class CamionView {
 		        DataOutputStream mensaje = new DataOutputStream(control.sslSocket.getOutputStream());
 				
 				// El camion manda el host
-				mensaje.writeUTF(control.HOSTALBERTO);
+				mensaje.writeUTF(control.HOSTCHUCU);
 				// Cerramos el socket.
 				
 				control.sslSocket.close();
