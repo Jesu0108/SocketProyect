@@ -225,6 +225,7 @@ public class ServidorView {
 
 			
 			salidaMensaje.close();
+			cliente.close();
 		}
 	}
 
