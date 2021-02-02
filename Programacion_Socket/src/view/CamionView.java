@@ -19,7 +19,7 @@ public class CamionView {
 		// IP HOST
 		private final String HOSTJESUS = "25.85.14.114";
 		private final String HOSTSERGIO = "25.84.193.39";
-		private final String HOSTALBERTO = "25.84.175.186";
+		private final String HOSTALBERTO = "25.36.114.20";
 		private final String HOSTCHUCU = "25.85.119.209";
 		private Socket socket;
 
