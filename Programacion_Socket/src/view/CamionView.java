@@ -13,7 +13,7 @@ import controller.CamionCtrl;
 
 public class CamionView {
 	public class Control {
-		final int PUERTO = 5678;
+		final int PUERTO = 9999;
 
 		CamionCtrl oCamion = new CamionCtrl();
 		// IP HOST
@@ -43,7 +43,7 @@ public class CamionView {
 				DataOutputStream mensaje = new DataOutputStream(control.socket.getOutputStream());
 
 				// El camion manda el host
-				mensaje.writeUTF(control.HOSTCHUCU);
+				mensaje.writeUTF(control.HOSTJESUS);
 				// Cerramos el socket
 
 				control.socket.close();
