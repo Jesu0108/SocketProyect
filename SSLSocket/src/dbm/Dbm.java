@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.sql.rowset.CachedRowSet;
 import javax.sql.rowset.RowSetProvider;
@@ -15,7 +16,7 @@ public static void openConnectionMySQL() throws SQLException {
 		
 		String DB_HOST = "localhost";
 		String DB_PORT = "3306";
-		String DB_SID = "medac";
+		String DB_SID = "programacion";
 		String DB_USER = "Medac";
 		String DB_PASS = "";
 		
@@ -24,19 +25,34 @@ public static void openConnectionMySQL() throws SQLException {
 		
 	}
 
-public static CachedRowSet ExecuteQuery(String strQuery) throws SQLException {
+public static void executeInsert(String strQuery) throws SQLException {
 	
-	ResultSet r = conn.createStatement().executeQuery(strQuery);
-	CachedRowSet crs = RowSetProvider.newFactory().createCachedRowSet();
-	crs.populate(r);
+	Statement ordenSQL;
 	
-	return crs;
+	ordenSQL = conn.createStatement();
+	ordenSQL.executeUpdate(strQuery);
+	ordenSQL.close();
 }
 
 public static void closeConnection() throws SQLException {
 	conn.close();
 	
 	
+}
+public static ResultSet getData (String sql) {
+	
+	ResultSet resultado = null;
+	
+	Statement ordenSQL;
+	try {
+		ordenSQL = conn.createStatement();
+		resultado = ordenSQL.executeQuery(sql);
+	} catch (SQLException e) {
+		System.out.println("No se ha podido ejecutar la orden : " +sql);
+		e.printStackTrace();
+	}
+
+return resultado;
 }
 	
 }
